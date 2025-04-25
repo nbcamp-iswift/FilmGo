@@ -6,19 +6,21 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXContainerItemProxy section */
-		58A209152DBB3C2400680822 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 58A208F32DBB3C2300680822 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 58A208FA2DBB3C2300680822;
-			remoteInfo = FilmGo;
-		};
-/* End PBXContainerItemProxy section */
+/* Begin PBXBuildFile section */
+		58A20A8B2DBB4C2300680822 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 58A20A8A2DBB4C2300680822 /* SnapKit */; };
+		58A20A8E2DBB4C8800680822 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 58A20A8D2DBB4C8800680822 /* RxCocoa */; };
+		58A20A902DBB4C8800680822 /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = 58A20A8F2DBB4C8800680822 /* RxRelay */; };
+		58A20A922DBB4C8800680822 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 58A20A912DBB4C8800680822 /* RxSwift */; };
+		58A20A9C2DBB4CFE00680822 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 58A20A9A2DBB4CFE00680822 /* .swiftlint.yml */; };
+		58A20A9D2DBB4CFE00680822 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 58A20A9B2DBB4CFE00680822 /* README.md */; };
+		58A20A9E2DBB4CFE00680822 /* .swiftformat in Resources */ = {isa = PBXBuildFile; fileRef = 58A20A992DBB4CFE00680822 /* .swiftformat */; };
+/* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		58A208FB2DBB3C2300680822 /* FilmGo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FilmGo.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		58A209142DBB3C2400680822 /* FilmGoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FilmGoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		58A20A992DBB4CFE00680822 /* .swiftformat */ = {isa = PBXFileReference; lastKnownFileType = text; name = .swiftformat; path = ../.swiftformat; sourceTree = SOURCE_ROOT; };
+		58A20A9A2DBB4CFE00680822 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; name = .swiftlint.yml; path = ../.swiftlint.yml; sourceTree = SOURCE_ROOT; };
+		58A20A9B2DBB4CFE00680822 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = SOURCE_ROOT; };
+		58A20A9F2DBB4E0800680822 /* FilmGo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FilmGo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -40,11 +42,6 @@
 			path = FilmGo;
 			sourceTree = "<group>";
 		};
-		58A209172DBB3C2400680822 /* FilmGoTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = FilmGoTests;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,13 +49,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		58A209112DBB3C2400680822 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				58A20A902DBB4C8800680822 /* RxRelay in Frameworks */,
+				58A20A8E2DBB4C8800680822 /* RxCocoa in Frameworks */,
+				58A20A922DBB4C8800680822 /* RxSwift in Frameworks */,
+				58A20A8B2DBB4C2300680822 /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -69,18 +63,11 @@
 			isa = PBXGroup;
 			children = (
 				58A208FD2DBB3C2300680822 /* FilmGo */,
-				58A209172DBB3C2400680822 /* FilmGoTests */,
-				58A208FC2DBB3C2300680822 /* Products */,
+				58A20A9B2DBB4CFE00680822 /* README.md */,
+				58A20A992DBB4CFE00680822 /* .swiftformat */,
+				58A20A9A2DBB4CFE00680822 /* .swiftlint.yml */,
+				58A20A9F2DBB4E0800680822 /* FilmGo.app */,
 			);
-			sourceTree = "<group>";
-		};
-		58A208FC2DBB3C2300680822 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				58A208FB2DBB3C2300680822 /* FilmGo.app */,
-				58A209142DBB3C2400680822 /* FilmGoTests.xctest */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -105,33 +92,14 @@
 			);
 			name = FilmGo;
 			packageProductDependencies = (
+				58A20A8A2DBB4C2300680822 /* SnapKit */,
+				58A20A8D2DBB4C8800680822 /* RxCocoa */,
+				58A20A8F2DBB4C8800680822 /* RxRelay */,
+				58A20A912DBB4C8800680822 /* RxSwift */,
 			);
 			productName = FilmGo;
-			productReference = 58A208FB2DBB3C2300680822 /* FilmGo.app */;
+			productReference = 58A20A9F2DBB4E0800680822 /* FilmGo.app */;
 			productType = "com.apple.product-type.application";
-		};
-		58A209132DBB3C2400680822 /* FilmGoTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 58A2092C2DBB3C2400680822 /* Build configuration list for PBXNativeTarget "FilmGoTests" */;
-			buildPhases = (
-				58A209102DBB3C2400680822 /* Sources */,
-				58A209112DBB3C2400680822 /* Frameworks */,
-				58A209122DBB3C2400680822 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				58A209162DBB3C2400680822 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				58A209172DBB3C2400680822 /* FilmGoTests */,
-			);
-			name = FilmGoTests;
-			packageProductDependencies = (
-			);
-			productName = FilmGoTests;
-			productReference = 58A209142DBB3C2400680822 /* FilmGoTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -146,10 +114,6 @@
 					58A208FA2DBB3C2300680822 = {
 						CreatedOnToolsVersion = 16.3;
 					};
-					58A209132DBB3C2400680822 = {
-						CreatedOnToolsVersion = 16.3;
-						TestTargetID = 58A208FA2DBB3C2300680822;
-					};
 				};
 			};
 			buildConfigurationList = 58A208F62DBB3C2300680822 /* Build configuration list for PBXProject "FilmGo" */;
@@ -161,13 +125,16 @@
 			);
 			mainGroup = 58A208F22DBB3C2300680822;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				58A20A892DBB4C2300680822 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				58A20A8C2DBB4C8800680822 /* XCRemoteSwiftPackageReference "RxSwift" */,
+			);
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 58A208FC2DBB3C2300680822 /* Products */;
+			productRefGroup = 58A208F22DBB3C2300680822;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				58A208FA2DBB3C2300680822 /* FilmGo */,
-				58A209132DBB3C2400680822 /* FilmGoTests */,
 			);
 		};
 /* End PBXProject section */
@@ -177,13 +144,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		58A209122DBB3C2400680822 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				58A20A9C2DBB4CFE00680822 /* .swiftlint.yml in Resources */,
+				58A20A9D2DBB4CFE00680822 /* README.md in Resources */,
+				58A20A9E2DBB4CFE00680822 /* .swiftformat in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,22 +203,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		58A209102DBB3C2400680822 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		58A209162DBB3C2400680822 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 58A208FA2DBB3C2300680822 /* FilmGo */;
-			targetProxy = 58A209152DBB3C2400680822 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		58A209282DBB3C2400680822 /* Debug */ = {
@@ -365,7 +313,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -423,51 +371,13 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		58A2092D2DBB3C2400680822 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = U8JNJV53KQ;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = nbcamps.FilmGoTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FilmGo.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FilmGo";
-			};
-			name = Debug;
-		};
-		58A2092E2DBB3C2400680822 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = U8JNJV53KQ;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = nbcamps.FilmGoTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FilmGo.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FilmGo";
 			};
 			name = Release;
 		};
@@ -492,16 +402,49 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		58A2092C2DBB3C2400680822 /* Build configuration list for PBXNativeTarget "FilmGoTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				58A2092D2DBB3C2400680822 /* Debug */,
-				58A2092E2DBB3C2400680822 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		58A20A892DBB4C2300680822 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
+			requirement = {
+				kind = exactVersion;
+				version = 5.7.1;
+			};
+		};
+		58A20A8C2DBB4C8800680822 /* XCRemoteSwiftPackageReference "RxSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ReactiveX/RxSwift.git";
+			requirement = {
+				kind = exactVersion;
+				version = 6.9.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		58A20A8A2DBB4C2300680822 /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 58A20A892DBB4C2300680822 /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+		58A20A8D2DBB4C8800680822 /* RxCocoa */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 58A20A8C2DBB4C8800680822 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxCocoa;
+		};
+		58A20A8F2DBB4C8800680822 /* RxRelay */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 58A20A8C2DBB4C8800680822 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxRelay;
+		};
+		58A20A912DBB4C8800680822 /* RxSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 58A20A8C2DBB4C8800680822 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 58A208F32DBB3C2300680822 /* Project object */;
 }
