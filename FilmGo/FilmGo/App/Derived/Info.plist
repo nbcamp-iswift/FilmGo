@@ -4,14 +4,14 @@
 <dict>
 	<key>BASE_API_URL</key>
 	<string>$(BASE_API_URL)</string>
-	<key>MOVIE_IMAGES_PATH</key>
-	<string>$(MOVIE_IMAGES_PATH)</string>
 	<key>MOVIE_NOW_PLAYING_PATH</key>
 	<string>$(MOVIE_NOW_PLAYING_PATH)</string>
 	<key>MOVIE_POPULAR_PATH</key>
 	<string>$(MOVIE_POPULAR_PATH)</string>
-	<key>MOVIE_TOP_RATED_PATH</key>
-	<string>$(MOVIE_TOP_RATED_PATH)</string>
+	<key>MOVIE_DETAIL_PATH</key>
+	<string>$(MOVIE_DETAIL_PATH)</string>
+	<key>MOVIE_CREDIT_PATH</key>
+	<string>$(MOVIE_CREDIT_PATH)</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
