@@ -15,78 +15,69 @@ enum NetworkError: Error {
     case decodingFailed(Error)
 }
 
-protocol NetworkServiceType {
+protocol NetworkServiceProtocol {
     func request <T: Decodable, U: Encodable>(
         url: URL,
         method: String,
-        requestedBody: U?
+        queryParameters: U?,
+        headers: [String: String]
     ) -> Single<T>
 }
 
-final class DefaultNetworkService: NetworkServiceType {
-    private let config: NetworkConfiguration
-
-    init(config: NetworkConfiguration) {
-        self.config = config
-    }
-
-    func request<T: Decodable, U: Encodable>(
+final class DefaultNetworkService: NetworkServiceProtocol {
+    func request<T, U>(
         url: URL,
         method: String,
-        requestedBody: U?
-    ) -> Single<T> {
+        queryParameters: U?,
+        headers: [String : String]
+    ) -> Single<T> where T : Decodable, U : Encodable
+    {
         return Single<T>.create { [weak self] in
             guard let self = self else {
                 throw NetworkError.cancelled
             }
 
-            var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+            var component = URLComponents(url: url, resolvingAgainstBaseURL: false)
 
-            if !self.config.queryParms.isEmpty {
-                components?.queryItems = self.config.queryParms.map {
-                    URLQueryItem(name: $0.key, value: $0.value)
-                }
-            }
-
-            guard let fullUrl = components?.url else {
-                throw NetworkError.invalidURL
-            }
-
-            var req = URLRequest(url: fullUrl)
-            req.httpMethod = method
-
-            self.config.headers.forEach { key, value in
-                req.setValue(value, forHTTPHeaderField: key)
-            }
-
-            if let body = requestedBody {
+            if let query = queryParameters {
                 do {
-                    // Set content type to JSON
-                    req.httpBody = try JSONEncoder().encode(body)
-                    req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                    let queryData = try JSONEncoder().encode(query)
+                    if let queryDict = try JSONSerialization.jsonObject(with: queryData) as? [String: Any] {
+                        component?.queryItems = queryDict.map {
+                            URLQueryItem(name: $0.key, value: "\($0.value)")
+                        }
+                    }
                 } catch {
                     throw NetworkError.requestEncodingFailed(error)
                 }
             }
 
+            guard let fullURL = component?.url else {
+                throw NetworkError.invalidURL
+            }
+
+            var req = URLRequest(url: fullURL)
+            req.httpMethod = method
+
+            headers.forEach { key, value in
+                req.setValue(value, forHTTPHeaderField: key)
+            }
+
             do {
                 let (data, res) = try await URLSession.shared.data(for: req)
-                guard let httpResponse = res as? HTTPURLResponse else {
+                guard let httpRes = res as? HTTPURLResponse,
+                        (200..<300).contains(httpRes.statusCode) else {
                     throw NetworkError.invalidRequest
                 }
 
-                switch httpResponse.statusCode {
-                case 200..<300:
-                    break
-                default:
-                    throw NetworkError.invalidRequest
+                guard !data.isEmpty else {
+                    throw NetworkError.noData
                 }
 
                 let decoded = try JSONDecoder().decode(T.self, from: data)
                 return decoded
-
-            } catch let urlErr as URLError {
-                switch urlErr.code {
+            } catch let error as URLError {
+                switch error.code {
                 case .notConnectedToInternet:
                     throw NetworkError.notConnected
                 case .cancelled:
@@ -94,7 +85,7 @@ final class DefaultNetworkService: NetworkServiceType {
                 case .timedOut:
                     throw NetworkError.timeout
                 default:
-                    throw NetworkError.network(urlErr)
+                    throw NetworkError.network(error)
                 }
             } catch {
                 throw NetworkError.decodingFailed(error)
