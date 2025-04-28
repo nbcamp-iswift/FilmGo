@@ -88,15 +88,24 @@ private extension InfoStackView {
     }
 
     func setHierarchy() {
-        [starImageView, starLabel].forEach {
+        [
+            starImageView,
+            starLabel
+        ].forEach {
             starStackView.addArrangedSubview($0)
         }
 
-        [runtimeImageView, runtimeLabel].forEach {
+        [
+            runtimeImageView,
+            runtimeLabel
+        ].forEach {
             runtimeStackView.addArrangedSubview($0)
         }
 
-        [starStackView, runtimeStackView].forEach {
+        [
+            starStackView,
+            runtimeStackView
+        ].forEach {
             addArrangedSubview($0)
         }
 
