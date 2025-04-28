@@ -15,6 +15,8 @@ final class TagsScrollView: UIScrollView {
         stackView.spacing = 8
         stackView.alignment = .fill
         stackView.distribution = .fill
+        stackView.isLayoutMarginsRelativeArrangement = true
+        stackView.directionalLayoutMargins = .init(top: 0, leading: 16, bottom: 0, trailing: 16)
         return stackView
     }()
 

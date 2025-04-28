@@ -86,10 +86,6 @@ private extension TagView {
     }
 
     func setConstraints() {
-        snp.makeConstraints { make in
-            make.height.equalTo(36)
-        }
-
         stackView.snp.makeConstraints { make in
             make.verticalEdges.equalToSuperview().inset(4)
             make.directionalHorizontalEdges.equalToSuperview().inset(12)
