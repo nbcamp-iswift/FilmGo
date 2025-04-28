@@ -9,11 +9,6 @@ import UIKit
 import SnapKit
 
 final class InfoStackView: UIStackView {
-    enum InfoType {
-        case item
-        case detail
-    }
-
     private let infoType: InfoType
 
     private let starStackView: UIStackView = {
@@ -24,7 +19,7 @@ final class InfoStackView: UIStackView {
 
     private let starImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "star")
+        imageView.image = .star
         return imageView
     }()
 
@@ -42,7 +37,7 @@ final class InfoStackView: UIStackView {
 
     private let runtimeImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "runtime")
+        imageView.image = .runtime
         return imageView
     }()
 
@@ -70,7 +65,7 @@ final class InfoStackView: UIStackView {
         fatalError()
     }
 
-    func setupModel(runtime: Int, star: Double, releasedDate: Int? = nil) {
+    func update(runtime: Int, star: Double, releasedDate: Int? = nil) {
         starLabel.text = "\(star)"
         runtimeLabel.text = "\(runtime) min"
         if let releasedDate, infoType == .detail {
@@ -79,27 +74,20 @@ final class InfoStackView: UIStackView {
     }
 }
 
-extension InfoStackView {
-    private func configure() {
+private extension InfoStackView {
+    func configure() {
         setAttributes()
         setHierarchy()
         setConstraints()
     }
 
-    private func setAttributes() {
-        switch infoType {
-        case .detail:
-            spacing = 16
-            runtimeLabel.font = .systemFont(ofSize: 13.6)
-            starLabel.font = .systemFont(ofSize: 13.6)
-        case .item:
-            spacing = 12
-            runtimeLabel.font = .systemFont(ofSize: 11.9)
-            starLabel.font = .systemFont(ofSize: 11.9)
-        }
+    func setAttributes() {
+        spacing = infoType.spacing
+        runtimeLabel.font = infoType.font
+        starLabel.font = infoType.font
     }
 
-    private func setHierarchy() {
+    func setHierarchy() {
         [starImageView, starLabel].forEach {
             starStackView.addArrangedSubview($0)
         }
@@ -117,13 +105,47 @@ extension InfoStackView {
         }
     }
 
-    private func setConstraints() {
+    func setConstraints() {
         starImageView.snp.makeConstraints { make in
-            make.size.equalTo(infoType == .detail ? 16 : 14)
+            make.size.equalTo(infoType.imageSize)
         }
 
         runtimeImageView.snp.makeConstraints { make in
-            make.size.equalTo(infoType == .detail ? 16 : 14)
+            make.size.equalTo(infoType.imageSize)
+        }
+    }
+}
+
+extension InfoStackView {
+    enum InfoType {
+        case item
+        case detail
+
+        var font: UIFont {
+            switch self {
+            case .item:
+                return .systemFont(ofSize: 11.9)
+            case .detail:
+                return .systemFont(ofSize: 13.6)
+            }
+        }
+
+        var spacing: CGFloat {
+            switch self {
+            case .item:
+                return 12
+            case .detail:
+                return 16
+            }
+        }
+
+        var imageSize: CGFloat {
+            switch self {
+            case .item:
+                return 14
+            case .detail:
+                return 16
+            }
         }
     }
 }
