@@ -11,6 +11,7 @@ final class AppConfiguration {
     private lazy var popularPath: String = getValue(for: "POPULAR_PATH")
     private lazy var movieDetailPath: String = getValue(for: "MOVIE_DETAIL_PATH")
     private lazy var movieCreditPath: String = getValue(for: "MOVIE_CREDIT_PATH")
+    private lazy var accessToken: String = getValue(for: "ACCESS_TOKEN")
 
     var nowPlayingURL: URL {
         makeURL(path: nowPlayingPath)
@@ -32,9 +33,13 @@ final class AppConfiguration {
 
     private func makeURL(path: String) -> URL {
         guard let url = URL(string: apiBaseURL + path) else {
-            print("Failed to create URL")
+            fatalError("Failed to create URL")
         }
         return url
+    }
+
+    var authorizationHeader: [String: String] {
+        ["Authorization": "Bearer \(accessToken)"]
     }
 
     private func getValue(for key: String) -> String {
