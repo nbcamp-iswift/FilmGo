@@ -8,14 +8,6 @@
 import UIKit
 
 final class FGButton: UIButton {
-    enum FGButtonType: String {
-        case login = "로그인"
-        case signUp = "회원가입"
-        case book = "예매하기"
-        case selectSeat = "좌석 선택하기"
-        case pay = "결제하기"
-    }
-
     private let fgButtonType: FGButtonType
 
     private var baseBackgroundColor: UIColor {
@@ -52,6 +44,7 @@ final class FGButton: UIButton {
 private extension FGButton {
     func configure() {
         setAttributes()
+        setConstraints()
     }
 
     func setAttributes() {
@@ -63,10 +56,10 @@ private extension FGButton {
 
             var config = button.configuration
             config?.attributedTitle = .init(
-                fgButtonType.rawValue,
+                fgButtonType.text,
                 attributes: .init([
                     .foregroundColor: baseForegroundColor,
-                    .font: UIFont.boldSystemFont(ofSize: 16)
+                    .font: UIFont.boldSystemFont(ofSize: 13.6),
                 ])
             )
             config?.background.backgroundColorTransformer = .init { _ in
@@ -74,6 +67,37 @@ private extension FGButton {
             }
 
             button.configuration = config
+        }
+    }
+
+    func setConstraints() {
+        snp.makeConstraints { make in
+            make.height.equalTo(48)
+        }
+    }
+}
+
+extension FGButton {
+    enum FGButtonType {
+        case login
+        case signUp
+        case book
+        case selectSeat
+        case pay
+
+        var text: String {
+            switch self {
+            case .login:
+                return "로그인"
+            case .signUp:
+                return "회원가입"
+            case .book:
+                return "예매하기"
+            case .selectSeat:
+                return "좌석 선택하기"
+            case .pay:
+                return "결제하기"
+            }
         }
     }
 }
