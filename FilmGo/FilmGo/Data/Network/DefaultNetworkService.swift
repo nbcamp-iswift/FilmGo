@@ -22,10 +22,27 @@ protocol NetworkServiceProtocol {
         queryParameters: U?,
         headers: [String: String]
     ) -> Single<T>
+
+    func request<T: Decodable, U: Encodable>(
+        type: NetworkServiceType,
+        queryParameters: U?
+    ) -> Single<T>
 }
 
 final class DefaultNetworkService: NetworkServiceProtocol {
-    func request<T, U>(
+    func request<T: Decodable, U: Encodable>(
+        type: NetworkServiceType,
+        queryParameters: U?
+    ) -> Single<T> where T : Decodable, U : Encodable {
+        return request(
+            url: type.url,
+            method: type.method,
+            queryParameters: queryParameters,
+            headers: type.headers
+        )
+    }
+
+    func request<T:Decodable, U: Encodable>(
         url: URL,
         method: String,
         queryParameters: U?,
@@ -37,7 +54,8 @@ final class DefaultNetworkService: NetworkServiceProtocol {
                 throw NetworkError.cancelled
             }
 
-            var component = URLComponents(url: url, resolvingAgainstBaseURL: false)
+            var component = URLComponents(url: url,
+                                          resolvingAgainstBaseURL: false)
 
             if let query = queryParameters {
                 do {
