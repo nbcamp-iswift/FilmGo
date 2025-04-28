@@ -37,7 +37,7 @@ struct MovieSummaryDTO: Codable {
     let backdropPath: String
     let genreIDS: [Int]
     let id: Int
-    let originalLanguage: OriginalLanguage
+    let originalLanguage: OriginalLanguageDTO
     let originalTitle, overview: String
     let popularity: Double
     let posterPath, releaseDate, title: String
@@ -61,7 +61,7 @@ struct MovieSummaryDTO: Codable {
     }
 }
 
-enum OriginalLanguage: String, Codable {
+enum OriginalLanguageDTO: String, Codable {
     case kr
     case en
     case ja
@@ -72,28 +72,28 @@ enum OriginalLanguage: String, Codable {
 struct MovieDetailResponseDTO: Codable {
     let adult: Bool
     let backdropPath: String
-    let belongsToCollection: BelongsToCollection
+    let belongsToCollection: BelongsToCollectionDTO
     let budget: Int
-    let genres: [Genre]
+    let genres: [GenreDTO]
     let homepage: String
     let id: Int
     let imdbID: String
     let originCountry: [String]
-    let originalLanguage: OriginalLanguage
+    let originalLanguage: OriginalLanguageDTO
     let originalTitle, overview: String
     let popularity: Double
     let posterPath: String
-    let productionCompanies: [ProductionCompany]
-    let productionCountries: [ProductionCountry]
+    let productionCompanies: [ProductionCompanyDTO]
+    let productionCountries: [ProductionCountryDTO]
     let releaseDate: String
     let revenue, runtime: Int
-    let spokenLanguages: [SpokenLanguage]
+    let spokenLanguages: [SpokenLanguageDTO]
     let status, tagline, title: String
     let video: Bool
     let voteAverage: Double
     let voteCount: Int
     let videos: Videos?
-    let images: Images?
+    let images: ImagesDTO?
 
     enum CodingKeys: String, CodingKey {
         case adult
@@ -118,7 +118,7 @@ struct MovieDetailResponseDTO: Codable {
     }
 }
 
-struct BelongsToCollection: Codable {
+struct BelongsToCollectionDTO: Codable {
     let id: Int
     let name, posterPath, backdropPath: String
 
@@ -129,18 +129,18 @@ struct BelongsToCollection: Codable {
     }
 }
 
-struct Genre: Codable {
+struct GenreDTO: Codable {
     let id: Int
     let name: String
 }
 
-struct Images: Codable {
-    let backdrops: [ImageItem]
-    let logos: [ImageItem]
-    let posters: [ImageItem]
+struct ImagesDTO: Codable {
+    let backdrops: [ImageItemDTO]
+    let logos: [ImageItemDTO]
+    let posters: [ImageItemDTO]
 }
 
-struct ImageItem: Codable {
+struct ImageItemDTO: Codable {
     let aspectRatio: Double
     let filePath: String
     let width: Int
@@ -160,7 +160,7 @@ struct ImageItem: Codable {
     }
 }
 
-struct ProductionCompany: Codable {
+struct ProductionCompanyDTO: Codable {
     let id: Int
     let logoPath: String?
     let name: String
@@ -174,7 +174,7 @@ struct ProductionCompany: Codable {
     }
 }
 
-struct ProductionCountry: Codable {
+struct ProductionCountryDTO: Codable {
     let iso3166_1: String
     let name: String
 
@@ -184,7 +184,7 @@ struct ProductionCountry: Codable {
     }
 }
 
-struct SpokenLanguage: Codable {
+struct SpokenLanguageDTO: Codable {
     let englishName: String
     let iso639_1: String
     let name: String
@@ -217,4 +217,52 @@ struct VideoItem: Codable {
     }
 }
 
-// MARK: - MovieCredit 
+// MARK: - MovieCredit
+struct MovieCreditDTO: Codable {
+    let id: Int
+    let cast: [CastDTO]
+    let crew: [CastDTO]
+}
+
+// MARK: - Cast
+struct CastDTO: Codable {
+    let adult: Bool
+    let gender, id: Int
+    let knownForDepartment: DepartmentDTO
+    let name, originalName: String
+    let popularity: Double
+    let profilePath: String?
+    let castID: Int?
+    let character: String?
+    let creditID: String
+    let order: Int?
+    let department: DepartmentDTO?
+    let job: String?
+
+    enum CodingKeys: String, CodingKey {
+        case adult, gender, id
+        case knownForDepartment = "known_for_department"
+        case name
+        case originalName = "original_name"
+        case popularity
+        case profilePath = "profile_path"
+        case castID = "cast_id"
+        case character
+        case creditID = "credit_id"
+        case order, department, job
+    }
+}
+
+enum DepartmentDTO: String, Codable {
+    case acting = "Acting"
+    case art = "Art"
+    case camera = "Camera"
+    case costumeMakeUp = "Costume & Make-Up"
+    case crew = "Crew"
+    case directing = "Directing"
+    case editing = "Editing"
+    case production = "Production"
+    case sound = "Sound"
+    case visualEffects = "Visual Effects"
+    case writing = "Writing"
+}
