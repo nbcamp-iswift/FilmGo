@@ -30,7 +30,12 @@ final class MyPageView: UIView {
         collectionView.backgroundColor = .baseBlack
         collectionView.register(
             OrderCell.self,
-            forCellWithReuseIdentifier: OrderCell.identifier
+            forCellWithReuseIdentifier: OrderCell.reuseIdentifier
+        )
+        collectionView.register(
+            SectionHeader.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: SectionHeader.identifier
         )
         return collectionView
     }()
@@ -105,7 +110,7 @@ private extension MyPageView {
         }
 
         orderCollectionView.snp.makeConstraints { make in
-            make.height.equalTo(380)
+            make.height.equalTo(366)
         }
 
         menuStackView.snp.makeConstraints { make in
@@ -117,7 +122,7 @@ private extension MyPageView {
         dataSource = .init(collectionView: orderCollectionView) { collection, indexPath, item
             -> UICollectionViewCell? in
             guard let cell = collection.dequeueReusableCell(
-                withReuseIdentifier: OrderCell.identifier,
+                withReuseIdentifier: OrderCell.reuseIdentifier,
                 for: indexPath
             ) as? OrderCell else { return nil }
 
@@ -126,12 +131,33 @@ private extension MyPageView {
             return cell
         }
 
+        dataSource?.supplementaryViewProvider = { collectionView, _, indexPath
+            -> UICollectionReusableView? in
+            guard let headerView = collectionView.dequeueReusableSupplementaryView(
+                ofKind: UICollectionView.elementKindSectionHeader,
+                withReuseIdentifier: SectionHeader.identifier,
+                for: indexPath
+            ) as? SectionHeader else { return nil }
+            headerView.update(with: .latestOrder)
+            return headerView
+        }
+
         var initialSnapshot = NSDiffableDataSourceSnapshot<MyPageSection, Order>()
         initialSnapshot.appendSections([.orders])
         dataSource?.apply(initialSnapshot)
     }
 
     func createLayout() -> UICollectionViewLayout {
+        let headerSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1),
+            heightDimension: .absolute(28)
+        )
+        let header = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: headerSize,
+            elementKind: UICollectionView.elementKindSectionHeader,
+            alignment: .top
+        )
+
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1),
             heightDimension: .absolute(144)
@@ -151,8 +177,9 @@ private extension MyPageView {
 
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .groupPagingCentered
-        section.contentInsets = .init(top: 0, leading: 16, bottom: 0, trailing: 16)
+        section.contentInsets = .init(top: 16, leading: 16, bottom: 0, trailing: 16)
         section.interGroupSpacing = 16
+        section.boundarySupplementaryItems = [header]
 
         let layout = UICollectionViewCompositionalLayout(section: section)
         return layout
@@ -164,4 +191,3 @@ extension MyPageView {
         case orders
     }
 }
-

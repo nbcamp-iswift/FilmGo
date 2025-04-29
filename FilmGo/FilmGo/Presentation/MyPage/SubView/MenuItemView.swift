@@ -68,7 +68,7 @@ private extension MenuItemView {
 }
 
 enum MenuType: String {
-    case orderHistory = "예매 내역"
+    case orderHistory = "전체 예매 내역"
     case logout = "로그아웃"
 
     var symbol: UIImage {

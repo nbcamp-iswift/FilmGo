@@ -9,8 +9,6 @@ import UIKit
 import SnapKit
 
 final class SectionHeader: UICollectionReusableView {
-    private var type: SectionType
-
     private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.spacing = 8
@@ -30,8 +28,7 @@ final class SectionHeader: UICollectionReusableView {
         return label
     }()
 
-    init(type: SectionType) {
-        self.type = type
+    override init(frame: CGRect) {
         super.init(frame: .zero)
         configure()
     }
@@ -40,20 +37,19 @@ final class SectionHeader: UICollectionReusableView {
     required init(coder: NSCoder) {
         fatalError()
     }
-}
 
-private extension SectionHeader {
-    func configure() {
-        setAttributes()
-        setHierachy()
-        setConstraints()
-    }
-
-    func setAttributes() {
+    func update(with type: SectionType) {
         symbolImageView.isHidden = type.symbol == nil
         symbolImageView.image = type.symbol
         titleLabel.font = type.font
         titleLabel.text = type.rawValue
+    }
+}
+
+private extension SectionHeader {
+    func configure() {
+        setHierachy()
+        setConstraints()
     }
 
     func setHierachy() {
