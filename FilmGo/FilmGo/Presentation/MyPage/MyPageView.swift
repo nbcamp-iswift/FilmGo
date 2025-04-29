@@ -11,13 +11,7 @@ import SnapKit
 final class MyPageView: UIView {
     private var dataSource: UICollectionViewDiffableDataSource<MyPageSection, Order>?
 
-    private let contentView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = 16
-        stackView.distribution = .equalSpacing
-        return stackView
-    }()
+    private let contentView = UIView()
 
     private let userView = UserView()
 
@@ -96,7 +90,7 @@ private extension MyPageView {
             userView,
             orderCollectionView,
             menuStackView,
-        ].forEach { contentView.addArrangedSubview($0) }
+        ].forEach { contentView.addSubview($0) }
 
         [
             orderHistoryView,
@@ -109,12 +103,20 @@ private extension MyPageView {
             make.top.directionalHorizontalEdges.equalToSuperview()
         }
 
+        userView.snp.makeConstraints { make in
+            make.top.directionalHorizontalEdges.equalToSuperview()
+        }
+
         orderCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(userView.snp.bottom).offset(16)
+            make.directionalHorizontalEdges.equalToSuperview()
             make.height.equalTo(366)
         }
 
         menuStackView.snp.makeConstraints { make in
+            make.top.equalTo(orderCollectionView.snp.bottom).offset(16)
             make.directionalHorizontalEdges.equalToSuperview().inset(16)
+            make.bottom.equalToSuperview()
         }
     }
 
