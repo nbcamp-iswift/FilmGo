@@ -71,7 +71,7 @@ enum OriginalLanguageDTO: String, Codable {
     case te
 }
 
-// MARK: -  MovieDetail URL <-> Response Data
+// MARK: - MovieDetail URL <-> Response Data
 
 struct MovieDetailResponseDTO: Codable {
     let adult: Bool
