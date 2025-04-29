@@ -9,8 +9,6 @@ import UIKit
 import SnapKit
 
 final class SectionHeader: UICollectionReusableView {
-    private var type: SectionType
-
     private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.spacing = 8
@@ -30,8 +28,7 @@ final class SectionHeader: UICollectionReusableView {
         return label
     }()
 
-    init(type: SectionType) {
-        self.type = type
+    override init(frame: CGRect) {
         super.init(frame: .zero)
         configure()
     }
@@ -40,23 +37,22 @@ final class SectionHeader: UICollectionReusableView {
     required init(coder: NSCoder) {
         fatalError()
     }
-}
 
-private extension SectionHeader {
-    func configure() {
-        setAttributes()
-        setHierachy()
-        setConstraints()
-    }
-
-    func setAttributes() {
+    func update(with type: SectionType) {
         symbolImageView.isHidden = type.symbol == nil
         symbolImageView.image = type.symbol
         titleLabel.font = type.font
         titleLabel.text = type.rawValue
     }
+}
 
-    func setHierachy() {
+private extension SectionHeader {
+    func configure() {
+        setHierarchy()
+        setConstraints()
+    }
+
+    func setHierarchy() {
         [
             stackView
         ].forEach { addSubview($0) }
@@ -84,12 +80,8 @@ extension SectionHeader {
         case nowPlaying = "현재 상영작"
         case popularMovie = "인기 영화"
         case synopsis = "줄거리"
-        case director = "감독"
-        case actors = "출연진"
         case selectDate = "날짜 선택"
         case selectTime = "시간 선택"
-        case latestSearch = "최근 검색어"
-        case popularGenre = "인기 장르"
         case searchResult = "검색 결과"
         case latestOrder = "최근 예매 내역"
 
@@ -106,7 +98,7 @@ extension SectionHeader {
 
         var font: UIFont {
             switch self {
-            case .nowPlaying, .popularMovie, .synopsis, .director, .actors:
+            case .nowPlaying, .popularMovie, .synopsis:
                 return .systemFont(ofSize: 17, weight: .bold)
             default:
                 return .systemFont(ofSize: 15.3, weight: .semibold)
