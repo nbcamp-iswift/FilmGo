@@ -11,11 +11,14 @@ import SnapKit
 final class MyPageView: UIView {
     private var dataSource: UICollectionViewDiffableDataSource<MyPageSection, Order>?
 
+    private let userView = UserView()
+
     private lazy var orderCollectionView: UICollectionView = {
         let collectionView = UICollectionView(
             frame: .zero,
             collectionViewLayout: createLayout()
         )
+        collectionView.isScrollEnabled = false
         collectionView.backgroundColor = .baseBlack
         collectionView.register(
             OrderCell.self,
@@ -32,6 +35,10 @@ final class MyPageView: UIView {
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError()
+    }
+
+    func updateUserView(with user: User) {
+        userView.update(with: user)
     }
 
     func updateSnapshot(with items: [Order]) {
@@ -55,13 +62,19 @@ private extension MyPageView {
 
     func setHierachy() {
         [
+            userView,
             orderCollectionView,
         ].forEach { addSubview($0) }
     }
 
     func setConstraints() {
+        userView.snp.makeConstraints { make in
+            make.top.directionalHorizontalEdges.equalToSuperview()
+        }
+
         orderCollectionView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.top.equalTo(userView.snp.bottom).offset(16)
+            make.directionalHorizontalEdges.bottom.equalToSuperview()
         }
     }
 
