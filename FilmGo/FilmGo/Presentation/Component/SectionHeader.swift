@@ -84,12 +84,8 @@ extension SectionHeader {
         case nowPlaying = "현재 상영작"
         case popularMovie = "인기 영화"
         case synopsis = "줄거리"
-        case director = "감독"
-        case actors = "출연진"
         case selectDate = "날짜 선택"
         case selectTime = "시간 선택"
-        case latestSearch = "최근 검색어"
-        case popularGenre = "인기 장르"
         case searchResult = "검색 결과"
         case latestOrder = "최근 예매 내역"
 
@@ -106,7 +102,7 @@ extension SectionHeader {
 
         var font: UIFont {
             switch self {
-            case .nowPlaying, .popularMovie, .synopsis, .director, .actors:
+            case .nowPlaying, .popularMovie, .synopsis:
                 return .systemFont(ofSize: 17, weight: .bold)
             default:
                 return .systemFont(ofSize: 15.3, weight: .semibold)

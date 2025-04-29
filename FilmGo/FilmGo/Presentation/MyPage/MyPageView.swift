@@ -139,7 +139,7 @@ private extension MyPageView {
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
         let groupSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(0.92),
+            widthDimension: .fractionalWidth(0.88),
             heightDimension: .absolute(304)
         )
         let group = NSCollectionLayoutGroup.vertical(
@@ -152,7 +152,7 @@ private extension MyPageView {
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .groupPagingCentered
         section.contentInsets = .init(top: 0, leading: 16, bottom: 0, trailing: 16)
-        section.interGroupSpacing = 8
+        section.interGroupSpacing = 16
 
         let layout = UICollectionViewCompositionalLayout(section: section)
         return layout
@@ -164,3 +164,4 @@ extension MyPageView {
         case orders
     }
 }
+
