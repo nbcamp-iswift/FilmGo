@@ -35,7 +35,7 @@ final class MenuItemView: UIView {
 private extension MenuItemView {
     func configure() {
         setAttributes()
-        setHierachy()
+        setHierarchy()
         setConstraints()
     }
 
@@ -45,7 +45,7 @@ private extension MenuItemView {
         backgroundColor = .neutrals800
     }
 
-    func setHierachy() {
+    func setHierarchy() {
         [
             symbolImageView,
             titleLabel,

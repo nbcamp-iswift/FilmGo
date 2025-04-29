@@ -48,11 +48,11 @@ final class SectionHeader: UICollectionReusableView {
 
 private extension SectionHeader {
     func configure() {
-        setHierachy()
+        setHierarchy()
         setConstraints()
     }
 
-    func setHierachy() {
+    func setHierarchy() {
         [
             stackView
         ].forEach { addSubview($0) }

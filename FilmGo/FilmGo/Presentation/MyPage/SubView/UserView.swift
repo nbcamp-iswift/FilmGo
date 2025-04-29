@@ -56,7 +56,7 @@ final class UserView: UIView {
 private extension UserView {
     func configure() {
         setAttributes()
-        setHierachy()
+        setHierarchy()
         setConstraints()
     }
 
@@ -64,7 +64,7 @@ private extension UserView {
         backgroundColor = .neutrals800
     }
 
-    func setHierachy() {
+    func setHierarchy() {
         [
             profileImageView,
             userInfoStackView,

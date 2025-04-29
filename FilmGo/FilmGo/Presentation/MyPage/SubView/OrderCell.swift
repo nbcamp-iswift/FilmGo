@@ -62,7 +62,7 @@ final class OrderCell: UICollectionViewCell {
 private extension OrderCell {
     func configure() {
         setAttributes()
-        setHierachy()
+        setHierarchy()
         setConstraints()
     }
 
@@ -72,7 +72,7 @@ private extension OrderCell {
         clipsToBounds = true
     }
 
-    func setHierachy() {
+    func setHierarchy() {
         [
             posterImageView,
             infoView,

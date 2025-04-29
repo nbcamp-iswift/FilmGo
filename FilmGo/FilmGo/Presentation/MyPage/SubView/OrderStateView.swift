@@ -35,7 +35,7 @@ final class OrderStateView: UIView {
 private extension OrderStateView {
     func configure() {
         setAttributes()
-        setHierachy()
+        setHierarchy()
         setConstraints()
     }
 
@@ -43,7 +43,7 @@ private extension OrderStateView {
         layer.cornerRadius = 4
     }
 
-    func setHierachy() {
+    func setHierarchy() {
         [
             stateLabel,
         ].forEach { addSubview($0) }

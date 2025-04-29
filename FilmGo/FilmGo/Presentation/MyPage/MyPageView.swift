@@ -72,7 +72,7 @@ final class MyPageView: UIView {
 private extension MyPageView {
     func configure() {
         setAttributes()
-        setHierachy()
+        setHierarchy()
         setConstraints()
         setDataSource()
     }
@@ -81,7 +81,7 @@ private extension MyPageView {
         backgroundColor = .baseBlack
     }
 
-    func setHierachy() {
+    func setHierarchy() {
         [
             contentView,
         ].forEach { addSubview($0) }
@@ -140,7 +140,9 @@ private extension MyPageView {
                 withReuseIdentifier: SectionHeader.identifier,
                 for: indexPath
             ) as? SectionHeader else { return nil }
+
             headerView.update(with: .latestOrder)
+
             return headerView
         }
 

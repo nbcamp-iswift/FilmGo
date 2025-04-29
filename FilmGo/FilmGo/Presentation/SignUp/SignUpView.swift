@@ -83,7 +83,7 @@ final class SignUpView: UIView {
 private extension SignUpView {
     func configure() {
         setAttributes()
-        setHierachy()
+        setHierarchy()
         setConstraints()
     }
 
@@ -91,7 +91,7 @@ private extension SignUpView {
         backgroundColor = .baseBlack
     }
 
-    func setHierachy() {
+    func setHierarchy() {
         [
             formView
         ].forEach { addSubview($0) }

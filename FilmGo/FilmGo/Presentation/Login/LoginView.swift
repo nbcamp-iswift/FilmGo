@@ -79,7 +79,7 @@ final class LoginView: UIView {
 private extension LoginView {
     func configure() {
         setAttributes()
-        setHierachy()
+        setHierarchy()
         setConstraints()
     }
 
@@ -87,7 +87,7 @@ private extension LoginView {
         backgroundColor = .baseBlack
     }
 
-    func setHierachy() {
+    func setHierarchy() {
         [
             formView
         ].forEach { addSubview($0) }

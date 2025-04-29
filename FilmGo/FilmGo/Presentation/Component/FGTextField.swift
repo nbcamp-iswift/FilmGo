@@ -56,7 +56,7 @@ final class FGTextField: UIStackView {
 private extension FGTextField {
     func configure() {
         setAttributes()
-        setHierachy()
+        setHierarchy()
         setConstraints()
     }
 
@@ -68,7 +68,7 @@ private extension FGTextField {
         setTextFieldRightView()
     }
 
-    func setHierachy() {
+    func setHierarchy() {
         [
             titleLabel,
             textField,
