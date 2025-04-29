@@ -5,7 +5,7 @@ struct MoviesRequestDTO: Encodable {
     let page: Int
     let region: String
 
-    init(language: String, page: Int, region: String) {
+    init(page: Int) {
         self.language = "ko-KR"
         self.page = page
         self.region = "KR"
@@ -28,7 +28,7 @@ struct MovieCreditsRequestDTO: Encodable {
     let movieID: Int
     let language: String
 
-    init (movieID: Int, language: String) {
+    init (movieID: Int) {
         self.movieID = movieID
         self.language = "ko-KR"
     }

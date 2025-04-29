@@ -1,8 +1,8 @@
 import Foundation
 
-struct Movies {
+struct Movie {
     let movieId: Int
-    let poserImage: Data
+    let posterImage: Data
     let title: String
     let star: Double
     let runningTime: String
@@ -12,21 +12,21 @@ struct Movies {
     let actors: [String]
 }
 
-struct NowPlayingMovie {
+struct NowPlayingMovies {
     let currentPage: Int
     let totalPages: Int
-    let movies: [Movies]
+    let movies: [Movie]
 }
 
 struct PopularMovies {
     let currentPage: Int
     let totalPages: Int
-    let movies: [Movies]
+    let movies: [Movie]
 }
 
 // TODO: Move this to CoreData
-struct SearchMovie {
+struct SearchMovies {
     let currentPage: Int
     let totalPages: Int
-    let movies: [Movies]
+    let movies: [Movie]
 }
