@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 
 final class TagView: UIView {
-    private let isDeletable: Bool
+    private var isDeletable: Bool
     private let disposeBag = DisposeBag()
 
     private let stackView: UIStackView = {
@@ -45,7 +45,7 @@ final class TagView: UIView {
         return button
     }()
 
-    init(isDeletable: Bool) {
+    init(isDeletable: Bool = false) {
         self.isDeletable = isDeletable
         super.init(frame: .zero)
         configure()
@@ -73,7 +73,7 @@ private extension TagView {
 
     func setAttributes() {
         backgroundColor = .neutrals600
-        layer.cornerRadius = 16
+        layer.cornerRadius = 18
         clipsToBounds = true
     }
 
@@ -86,6 +86,10 @@ private extension TagView {
     }
 
     func setConstraints() {
+        snp.makeConstraints { make in
+            make.height.equalTo(36)
+        }
+
         stackView.snp.makeConstraints { make in
             make.verticalEdges.equalToSuperview().inset(4)
             make.directionalHorizontalEdges.equalToSuperview().inset(12)
