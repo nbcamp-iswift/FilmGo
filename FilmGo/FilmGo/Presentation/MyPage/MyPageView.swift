@@ -11,6 +11,14 @@ import SnapKit
 final class MyPageView: UIView {
     private var dataSource: UICollectionViewDiffableDataSource<MyPageSection, Order>?
 
+    private let contentView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 16
+        stackView.distribution = .equalSpacing
+        return stackView
+    }()
+
     private let userView = UserView()
 
     private lazy var orderCollectionView: UICollectionView = {
@@ -26,6 +34,20 @@ final class MyPageView: UIView {
         )
         return collectionView
     }()
+
+    private let menuStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 1
+        stackView.backgroundColor = .neutrals600
+        stackView.layer.cornerRadius = 8
+        stackView.clipsToBounds = true
+        return stackView
+    }()
+
+    private let orderHistoryView = MenuItemView(type: .orderHistory)
+
+    private let logoutView = MenuItemView(type: .logout)
 
     override init(frame: CGRect) {
         super.init(frame: .zero)
@@ -62,26 +84,39 @@ private extension MyPageView {
 
     func setHierachy() {
         [
+            contentView,
+        ].forEach { addSubview($0) }
+
+        [
             userView,
             orderCollectionView,
-        ].forEach { addSubview($0) }
+            menuStackView,
+        ].forEach { contentView.addArrangedSubview($0) }
+
+        [
+            orderHistoryView,
+            logoutView,
+        ].forEach { menuStackView.addArrangedSubview($0) }
     }
 
     func setConstraints() {
-        userView.snp.makeConstraints { make in
+        contentView.snp.makeConstraints { make in
             make.top.directionalHorizontalEdges.equalToSuperview()
         }
 
         orderCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(userView.snp.bottom).offset(16)
-            make.directionalHorizontalEdges.bottom.equalToSuperview()
+            make.height.equalTo(380)
+        }
+
+        menuStackView.snp.makeConstraints { make in
+            make.directionalHorizontalEdges.equalToSuperview().inset(16)
         }
     }
 
     func setDataSource() {
-        dataSource = .init(collectionView: orderCollectionView) { collectionView, indexPath, item
+        dataSource = .init(collectionView: orderCollectionView) { collection, indexPath, item
             -> UICollectionViewCell? in
-            guard let cell = collectionView.dequeueReusableCell(
+            guard let cell = collection.dequeueReusableCell(
                 withReuseIdentifier: OrderCell.identifier,
                 for: indexPath
             ) as? OrderCell else { return nil }
@@ -99,13 +134,13 @@ private extension MyPageView {
     func createLayout() -> UICollectionViewLayout {
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1),
-            heightDimension: .estimated(150)
+            heightDimension: .absolute(144)
         )
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(0.92),
-            heightDimension: .estimated(300)
+            heightDimension: .absolute(304)
         )
         let group = NSCollectionLayoutGroup.vertical(
             layoutSize: groupSize,
@@ -124,6 +159,8 @@ private extension MyPageView {
     }
 }
 
-enum MyPageSection: Hashable {
-    case orders
+extension MyPageView {
+    enum MyPageSection: Hashable {
+        case orders
+    }
 }
