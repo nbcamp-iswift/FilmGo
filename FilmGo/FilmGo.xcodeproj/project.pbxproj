@@ -263,7 +263,7 @@
 		58A2092A2DBB3C2400680822 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReferenceAnchor = 58A208FD2DBB3C2300680822 /* FilmGo */;
-			baseConfigurationReferenceRelativePath = Resource/Config.xcconfig;
+			baseConfigurationReferenceRelativePath = App/Resource/Config.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;

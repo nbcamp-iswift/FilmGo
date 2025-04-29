@@ -89,6 +89,20 @@ final class DetailView: UIView {
     required init?(coder: NSCoder) {
         fatalError()
     }
+
+    func update(with movie: Movie) {
+        posterImageView.image = UIImage(data: movie.posterImage)
+        titleLabel.text = movie.title
+        infoStackView.update(
+            runtime: Int(movie.runningTime) ?? 0,
+            star: movie.star,
+            releasedDate: movie.releasedYear
+        )
+        genresStackView.updateTags(movie.genres)
+        overviewContentLabel.text = "overview가 없어요 ㅠ" // TODO: movie.overview
+        directorContentLabel.text = movie.director
+        actorsStackView.updateTags(movie.actors)
+    }
 }
 
 private extension DetailView {

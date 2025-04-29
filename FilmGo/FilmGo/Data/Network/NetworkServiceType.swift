@@ -9,7 +9,7 @@ enum NetworkServiceType {
 
 extension NetworkServiceType {
     private var baseURL: String {
-        getValue(for: "API_BASE_URL")
+        getValue(for: "BASE_API_URL")
     }
 
     private var accessToken: String {
@@ -21,7 +21,7 @@ extension NetworkServiceType {
     }
 
     private var popularPath: String {
-        getValue(for: "POPULAR_PATH")
+        getValue(for: "MOVIE_POPULAR_PATH")
     }
 
     private var movieDetailPath: String {
