@@ -218,7 +218,7 @@ struct VideoItem: Codable {
 }
 
 // MARK: - MovieCredit
-struct MovieCreditDTO: Codable {
+struct MovieCreditResponseDTO: Codable {
     let id: Int
     let cast: [CastDTO]
     let crew: [CastDTO]

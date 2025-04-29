@@ -27,13 +27,40 @@ protocol NetworkServiceProtocol {
         type: NetworkServiceType,
         queryParameters: U?
     ) -> Single<T>
+
+    func downloadImage(from url: URL) -> Single<Data>
 }
 
 final class DefaultNetworkService: NetworkServiceProtocol {
+    func downloadImage(from url: URL) -> Single<Data> {
+        return Single<Data>.create { [weak self] single in
+            guard let self = self else {
+                single(.failure(NetworkError.cancelled))
+                return Disposables.create()
+            }
+
+            let task = URLSession.shared.dataTask(with: url) { data, res, err in
+                if let err = err {
+                    single(.failure(NetworkError.network(err)))
+                    return
+                }
+
+                guard let data = data else {
+                    single(.failure(NetworkError.noData))
+                    return
+                }
+
+                single(.success(data))
+            }
+            task.resume()
+            return Disposables.create { task.cancel() }
+        }
+    }
+
     func request<T: Decodable, U: Encodable>(
         type: NetworkServiceType,
         queryParameters: U?
-    ) -> Single<T> where T : Decodable, U : Encodable {
+    ) -> Single<T> {
         return request(
             url: type.url,
             method: type.method,
@@ -47,15 +74,15 @@ final class DefaultNetworkService: NetworkServiceProtocol {
         method: String,
         queryParameters: U?,
         headers: [String : String]
-    ) -> Single<T> where T : Decodable, U : Encodable
+    ) -> Single<T>
     {
-        return Single<T>.create { [weak self] in
+        return Single<T>.create { [weak self] single in
             guard let self = self else {
-                throw NetworkError.cancelled
+                single(.failure(NetworkError.cancelled))
+                return Disposables.create()
             }
 
-            var component = URLComponents(url: url,
-                                          resolvingAgainstBaseURL: false)
+            var component = URLComponents(url: url, resolvingAgainstBaseURL: false)
 
             if let query = queryParameters {
                 do {
@@ -66,48 +93,55 @@ final class DefaultNetworkService: NetworkServiceProtocol {
                         }
                     }
                 } catch {
-                    throw NetworkError.requestEncodingFailed(error)
+                    single(.failure(NetworkError.requestEncodingFailed(error)))
+                    return Disposables.create()
                 }
             }
 
             guard let fullURL = component?.url else {
-                throw NetworkError.invalidURL
+                single(.failure(NetworkError.invalidURL))
+                return Disposables.create()
             }
 
             var req = URLRequest(url: fullURL)
             req.httpMethod = method
-
             headers.forEach { key, value in
                 req.setValue(value, forHTTPHeaderField: key)
             }
 
-            do {
-                let (data, res) = try await URLSession.shared.data(for: req)
-                guard let httpRes = res as? HTTPURLResponse,
-                        (200..<300).contains(httpRes.statusCode) else {
-                    throw NetworkError.invalidRequest
+            let task = URLSession.shared.dataTask(with: req) { data, res, err in
+                if let err = err as? URLError {
+                    switch err.code {
+                    case .notConnectedToInternet:
+                        single(.failure(NetworkError.notConnected))
+                    case .cancelled:
+                        single(.failure(NetworkError.cancelled))
+                    case .timedOut:
+                        single(.failure(NetworkError.timeout))
+                    default:
+                        single(.failure(NetworkError.network(err)))
+                    }
+                    return
+                } else if let err = err {
+                    single(.failure(NetworkError.network(err)))
+                    return
                 }
 
-                guard !data.isEmpty else {
-                    throw NetworkError.noData
+                guard let data = data, !data.isEmpty else {
+                    single(.failure(NetworkError.noData))
+                    return
                 }
 
-                let decoded = try JSONDecoder().decode(T.self, from: data)
-                return decoded
-            } catch let error as URLError {
-                switch error.code {
-                case .notConnectedToInternet:
-                    throw NetworkError.notConnected
-                case .cancelled:
-                    throw NetworkError.cancelled
-                case .timedOut:
-                    throw NetworkError.timeout
-                default:
-                    throw NetworkError.network(error)
+                do {
+                    let decoded = try JSONDecoder().decode(T.self, from: data)
+                    single(.success(decoded))
+                } catch {
+                    single(.failure(NetworkError.decodingFailed(error)))
                 }
-            } catch {
-                throw NetworkError.decodingFailed(error)
             }
+
+            task.resume()
+            return Disposables.create { task.cancel() }
         }
     }
 }
