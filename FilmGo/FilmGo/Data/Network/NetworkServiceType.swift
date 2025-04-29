@@ -41,7 +41,7 @@ extension NetworkServiceType {
             fullPath = popularPath
         case .movieDetail(let id):
             fullPath = movieDetailPath.replacingOccurrences(of: "{movie_id}", with: "\(id)")
-        case . movieCredit(let id):
+        case .movieCredit(let id):
             fullPath = movieCreditPath.replacingOccurrences(of: "{movie_id}", with: "\(id)")
         }
 
@@ -52,7 +52,7 @@ extension NetworkServiceType {
     }
 
     var method: String {
-        return "GET"
+        "GET"
     }
 
     var headers: [String: String] {

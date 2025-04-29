@@ -6,9 +6,9 @@ struct MoviesRequestDTO: Encodable {
     let region: String
 
     init(page: Int) {
-        self.language = "ko-KR"
+        language = "ko-KR"
         self.page = page
-        self.region = "KR"
+        region = "KR"
     }
 }
 
@@ -28,8 +28,8 @@ struct MovieCreditsRequestDTO: Encodable {
     let movieID: Int
     let language: String
 
-    init (movieID: Int) {
+    init(movieID: Int) {
         self.movieID = movieID
-        self.language = "ko-KR"
+        language = "ko-KR"
     }
 }

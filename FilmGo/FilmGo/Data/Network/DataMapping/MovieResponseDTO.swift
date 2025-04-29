@@ -1,6 +1,7 @@
 import Foundation
 
 // MARK: - Now Playing URL <-> Response Data
+
 struct NowPlayingMovieResponseDTO: Codable {
     let dates: Dates
     let page: Int
@@ -19,6 +20,7 @@ struct Dates: Codable {
 }
 
 // MARK: - Popular URL <-> Response Data
+
 struct PopularMoviesResponseDTO: Codable {
     let page: Int
     let results: [MovieSummaryDTO]
@@ -32,6 +34,7 @@ struct PopularMoviesResponseDTO: Codable {
 }
 
 // MARK: - This Shares with Popular ULR & Now Playing URL
+
 struct MovieSummaryDTO: Codable {
     let adult: Bool
     let backdropPath: String
@@ -69,6 +72,7 @@ enum OriginalLanguageDTO: String, Codable {
 }
 
 // MARK: -  MovieDetail URL <-> Response Data
+
 struct MovieDetailResponseDTO: Codable {
     let adult: Bool
     let backdropPath: String
@@ -218,6 +222,7 @@ struct VideoItem: Codable {
 }
 
 // MARK: - MovieCredit
+
 struct MovieCreditResponseDTO: Codable {
     let id: Int
     let cast: [CastDTO]
@@ -225,6 +230,7 @@ struct MovieCreditResponseDTO: Codable {
 }
 
 // MARK: - Cast
+
 struct CastDTO: Codable {
     let adult: Bool
     let gender, id: Int

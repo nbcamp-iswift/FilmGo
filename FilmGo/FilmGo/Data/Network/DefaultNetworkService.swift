@@ -16,7 +16,7 @@ enum NetworkError: Error {
 }
 
 protocol NetworkServiceProtocol {
-    func request <T: Decodable, U: Encodable>(
+    func request<T: Decodable, U: Encodable>(
         url: URL,
         method: String,
         queryParameters: U?,
@@ -33,19 +33,19 @@ protocol NetworkServiceProtocol {
 
 final class DefaultNetworkService: NetworkServiceProtocol {
     func downloadImage(from url: URL) -> Single<Data> {
-        return Single<Data>.create { [weak self] single in
-            guard let self = self else {
+        Single<Data>.create { [weak self] single in
+            guard let self else {
                 single(.failure(NetworkError.cancelled))
                 return Disposables.create()
             }
 
-            let task = URLSession.shared.dataTask(with: url) { data, res, err in
-                if let err = err {
+            let task = URLSession.shared.dataTask(with: url) { data, _, err in
+                if let err {
                     single(.failure(NetworkError.network(err)))
                     return
                 }
 
-                guard let data = data else {
+                guard let data else {
                     single(.failure(NetworkError.noData))
                     return
                 }
@@ -57,11 +57,11 @@ final class DefaultNetworkService: NetworkServiceProtocol {
         }
     }
 
-    func request<T: Decodable, U: Encodable>(
+    func request<T: Decodable>(
         type: NetworkServiceType,
-        queryParameters: U?
+        queryParameters: (some Encodable)?
     ) -> Single<T> {
-        return request(
+        request(
             url: type.url,
             method: type.method,
             queryParameters: queryParameters,
@@ -69,15 +69,14 @@ final class DefaultNetworkService: NetworkServiceProtocol {
         )
     }
 
-    func request<T:Decodable, U: Encodable>(
+    func request<T: Decodable>(
         url: URL,
         method: String,
-        queryParameters: U?,
-        headers: [String : String]
-    ) -> Single<T>
-    {
-        return Single<T>.create { [weak self] single in
-            guard let self = self else {
+        queryParameters: (some Encodable)?,
+        headers: [String: String]
+    ) -> Single<T> {
+        Single<T>.create { [weak self] single in
+            guard let self else {
                 single(.failure(NetworkError.cancelled))
                 return Disposables.create()
             }
@@ -87,7 +86,9 @@ final class DefaultNetworkService: NetworkServiceProtocol {
             if let query = queryParameters {
                 do {
                     let queryData = try JSONEncoder().encode(query)
-                    if let queryDict = try JSONSerialization.jsonObject(with: queryData) as? [String: Any] {
+                    if let queryDict = try JSONSerialization.jsonObject(
+                        with: queryData
+                    ) as? [String: Any] {
                         component?.queryItems = queryDict.map {
                             URLQueryItem(name: $0.key, value: "\($0.value)")
                         }
@@ -109,7 +110,7 @@ final class DefaultNetworkService: NetworkServiceProtocol {
                 req.setValue(value, forHTTPHeaderField: key)
             }
 
-            let task = URLSession.shared.dataTask(with: req) { data, res, err in
+            let task = URLSession.shared.dataTask(with: req) { data, _, err in
                 if let err = err as? URLError {
                     switch err.code {
                     case .notConnectedToInternet:
@@ -122,12 +123,12 @@ final class DefaultNetworkService: NetworkServiceProtocol {
                         single(.failure(NetworkError.network(err)))
                     }
                     return
-                } else if let err = err {
+                } else if let err {
                     single(.failure(NetworkError.network(err)))
                     return
                 }
 
-                guard let data = data, !data.isEmpty else {
+                guard let data, !data.isEmpty else {
                     single(.failure(NetworkError.noData))
                     return
                 }
