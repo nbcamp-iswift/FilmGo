@@ -1,7 +1,7 @@
 import Foundation
 
 // TODO: Move this to CoreData ?
-struct Order {
+struct Order: Hashable {
     let movieName: String
     let postImageURL: String
     let orderedDate: Date
