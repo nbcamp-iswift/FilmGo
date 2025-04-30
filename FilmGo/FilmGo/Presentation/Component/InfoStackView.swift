@@ -65,7 +65,7 @@ final class InfoStackView: UIStackView {
         fatalError()
     }
 
-    func update(runtime: Int, star: Double, releasedDate: Int? = nil) {
+    func update(runtime: Int, star: String, releasedDate: Int? = nil) {
         starLabel.text = "\(star)"
         runtimeLabel.text = "\(runtime) min"
         if let releasedDate, infoType == .detail {

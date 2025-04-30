@@ -1,10 +1,10 @@
 import Foundation
 
-struct Movie {
+struct Movie: Hashable {
     let movieId: Int
     let posterImage: Data
     let title: String
-    let star: Double
+    let star: String
     let runningTime: String
     let releasedYear: Int
     let genres: [String]
@@ -13,31 +13,11 @@ struct Movie {
     let actors: [String]
 }
 
-struct MovieBrief {
-    let movieId: Int
-    let posterImage: Data
-    let title: String
-    let star: Double
-    let runningTime: String
-    let releasedYear: Int
-    let genres: [String]
-}
-
-struct NowPlayingMovies {
+struct PaginatedMovies {
     let currentPage: Int
     let totalPages: Int
-    let movies: [MovieBrief]
+    let movies: [Movie]
 }
 
-struct PopularMovies {
-    let currentPage: Int
-    let totalPages: Int
-    let movies: [MovieBrief]
-}
-
-// TODO: Move this to CoreData
-struct SearchMovies {
-    let currentPage: Int
-    let totalPages: Int
-    let movies: [MovieBrief]
-}
+// typealias NowPlayingMovies = PaginatedMovies
+// typealias PopularMovies = PaginatedMovies

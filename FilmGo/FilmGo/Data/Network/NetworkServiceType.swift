@@ -3,7 +3,7 @@ import Foundation
 enum BundleConfigKey: String {
     case baseURL = "BASE_API_URL"
     case accessToken = "ACCESS_TOKEN"
-    case nowPlayingPath = "NOW_PLAYING_PATH"
+    case nowPlayingPath = "MOVIE_NOW_PLAYING_PATH"
     case popularPath = "MOVIE_POPULAR_PATH"
     case movieDetailPath = "MOVIE_DETAIL_PATH"
     case movieCreditPath = "MOVIE_CREDIT_PATH"

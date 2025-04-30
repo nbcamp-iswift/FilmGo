@@ -19,7 +19,6 @@ final class DefaultMovieRepository: MovieRepositoryProtocol {
             queryParameters: MovieCreditsRequestDTO(movieID: id)
         )
 
-        // Observable return
         return Single.zip(detailReq, creditReq)
             .flatMap { detailDto, creditDto -> Single<Movie> in
                 guard let posterPath = detailDto.posterPath else {
@@ -27,154 +26,73 @@ final class DefaultMovieRepository: MovieRepositoryProtocol {
                 }
 
                 return self.networkService.downloadImage(path: posterPath, size: .w500)
-                    .map { posterData in
-                        let movieId = detailDto.id ?? 0
-                        let genres = detailDto.genres?.compactMap(\.name) ?? []
-                        let releasedYear: Int = {
-                            guard let releaseDate = detailDto.releaseDate else { return 0 }
-                            let components = releaseDate.split(separator: "-")
-                            return Int(components.first ?? "") ?? 0
-                        }()
-
-                        let director: String = creditDto.crew?.first?.name ?? ""
-                        let actors: [String] = creditDto.cast?
-                            .prefix(3)
-                            .compactMap(\.name) ?? []
-
-                        let runningTime = "\(detailDto.runtime ?? 0)"
-                        let voteAverage = ((detailDto.voteAverage ?? 0) * 10).rounded() * 0.1
-                        let title = detailDto.title ?? ""
-                        let overview = detailDto.overview ?? ""
-
-                        return Movie(
-                            movieId: movieId,
-                            posterImage: posterData,
-                            title: title,
-                            star: voteAverage,
-                            runningTime: runningTime,
-                            releasedYear: releasedYear,
-                            genres: genres,
-                            overview: overview,
-                            director: director,
-                            actors: actors
+                    .map { imageData in
+                        self.mapToMovieEntity(
+                            detailDTO: detailDto,
+                            creditDTO: creditDto,
+                            imageData: imageData
                         )
                     }
             }
     }
 
-    func fetchPopularMovies(page: Int) -> Single<PopularMovies> {
-        let popularRequest: Single<PopularMoviesResponseDTO> = networkService.request(
-            type: .popular,
-            queryParameters: MoviesRequestDTO(page: page)
+    func fetchPopularMovies(page: Int) -> Single<PaginatedMovies> {
+        fetchMovieList(
+            page: page,
+            endPoint: .popular
         )
-        return popularRequest
-            .flatMap { res in
-                let movieSingles: [Single<MovieBrief>] = res.results
-                    .map { summary in
-                        guard let posterPath = summary.posterPath else {
-                            return Single.error(NetworkError.invalidURL)
-                        }
-
-                        let summaryId = summary.id ?? 0
-                        let detailReq: Single<MovieDetailResponseDTO> = self.networkService.request(
-                            type: .movieDetail(movieID: summaryId),
-                            queryParameters: MovieDetailRequestDTO(movieID: summaryId)
-                        )
-
-                        let posterReq: Single<Data> = self.networkService.downloadImage(
-                            path: posterPath, size: .w500
-                        )
-
-                        return Single.zip(detailReq, posterReq)
-                            .map { detail, posterData in
-                                let genres = detail.genres?.compactMap(\.name) ?? []
-
-                                let releaseYear: Int = {
-                                    guard let releaseDate = detail.releaseDate else { return 0 }
-                                    let components = releaseDate.split(separator: "-")
-                                    return Int(components.first ?? "") ?? 0
-                                }()
-
-                                let runningTime = "\(detail.runtime ?? 0)"
-                                let voteAverage = ((detail.voteAverage ?? 0) * 10).rounded() * 0.1
-
-                                let summaryTitle = summary.title ?? "No Title"
-
-                                return MovieBrief(
-                                    movieId: summaryId,
-                                    posterImage: posterData,
-                                    title: summaryTitle,
-                                    star: voteAverage,
-                                    runningTime: runningTime,
-                                    releasedYear: releaseYear,
-                                    genres: genres
-                                )
-                            }
-                    }
-                return Single.zip(movieSingles)
-                    .map { movies in
-                        PopularMovies(
-                            currentPage: res.page,
-                            totalPages: res.totalPages,
-                            movies: movies
-                        )
-                    }
-            }
     }
 
-    func fetchNowPlayingMovies(page: Int) -> Single<NowPlayingMovies> {
-        let nowPlayingRequest: Single<NowPlayingMovieResponseDTO> = networkService.request(
-            type: .popular,
+    func fetchNowPlayingMovies(page: Int) -> Single<PaginatedMovies> {
+        fetchMovieList(
+            page: page,
+            endPoint: .nowPlaying
+        )
+    }
+
+    private func mapToMovieEntity(
+        detailDTO: MovieDetailResponseDTO,
+        creditDTO: MovieCreditResponseDTO,
+        imageData: Data
+    ) -> Movie {
+        let releaseYear = detailDTO.releaseDate?.split(separator: "-").first
+            .flatMap { Int($0) } ?? 0
+
+        let genres = detailDTO.genres?.compactMap(\.name) ?? []
+        let voteAverage = String(format: "%.1f", detailDTO.voteAverage ?? 0)
+
+        return Movie(
+            movieId: detailDTO.id ?? 0,
+            posterImage: imageData,
+            title: detailDTO.title ?? "Untitled",
+            star: voteAverage,
+            runningTime: "\(detailDTO.runtime ?? 0)",
+            releasedYear: releaseYear,
+            genres: genres,
+            overview: detailDTO.overview ?? "",
+            director: creditDTO.crew?.first?.name ?? "",
+            actors: creditDTO.cast?.prefix(3).compactMap(\.name) ?? []
+        )
+    }
+
+    private func fetchMovieList(
+        page: Int,
+        endPoint: NetworkServiceType
+    ) -> Single<PaginatedMovies> {
+        let request: Single<NowPlayingPopularMovieResponseDTO> = networkService.request(
+            type: endPoint,
             queryParameters: MoviesRequestDTO(page: page)
         )
 
-        return nowPlayingRequest
+        return request
             .flatMap { res in
-                let movieSingles: [Single<MovieBrief>] = res.results
-                    .map { summary in
-                        guard let posterPath = summary.posterPath else {
-                            return Single.error(NetworkError.invalidURL)
-                        }
+                let movieSingles: [Single<Movie>] = res.results
+                    .compactMap(\.id)
+                    .map { self.fetchMovieEntity(id: $0) }
 
-                        let summaryId = summary.id ?? 0
-
-                        let detailReq: Single<MovieDetailResponseDTO> = self.networkService.request(
-                            type: .movieDetail(movieID: summaryId),
-                            queryParameters: MovieDetailRequestDTO(movieID: summaryId)
-                        )
-
-                        let posterReq: Single<Data> = self.networkService.downloadImage(
-                            path: posterPath, size: .w500
-                        )
-
-                        return Single.zip(detailReq, posterReq)
-                            .map { detail, posterData in
-                                let genres = detail.genres?.compactMap(\.name) ?? []
-
-                                let releaseYear: Int = {
-                                    guard let releaseDate = detail.releaseDate else { return 0 }
-                                    let components = releaseDate.split(separator: "-")
-                                    return Int(components.first ?? "") ?? 0
-                                }()
-
-                                let runningTime = "\(detail.runtime ?? 0)"
-                                let voteAverage = ((detail.voteAverage ?? 0) * 10).rounded() * 0.1
-                                let summaryTitle = summary.title ?? "No Title"
-
-                                return MovieBrief(
-                                    movieId: summaryId,
-                                    posterImage: posterData,
-                                    title: summaryTitle,
-                                    star: voteAverage,
-                                    runningTime: runningTime,
-                                    releasedYear: releaseYear,
-                                    genres: genres
-                                )
-                            }
-                    }
                 return Single.zip(movieSingles)
                     .map { movies in
-                        NowPlayingMovies(
+                        PaginatedMovies(
                             currentPage: res.page,
                             totalPages: res.totalPages,
                             movies: movies

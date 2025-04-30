@@ -18,10 +18,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
         self.window = window
-
-        // [COMMENT] Coordinator & DI Container:
-        // 1. Coordinater 가 있다면, navigationController 및 DIcontainer 주입 -> .start
-        // 2. 없다면, DIContainer 만, Client Coordinator 에 주입 및 전달
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {}
