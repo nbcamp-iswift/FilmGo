@@ -42,11 +42,36 @@ final class SignUpViewController: UIViewController {
 private extension SignUpViewController {
     func configure() {
         setBindings()
+        dismissKeyboard()
     }
 
     func setBindings() {
         signUpView.backButton.rx.tap
             .map { SignUpViewModel.Action.didTapBackButton }
+            .bind(to: viewModel.action)
+            .disposed(by: disposeBag)
+
+        signUpView.emailTextField.textField.rx.text
+            .orEmpty
+            .map { SignUpViewModel.Action.didChangeEmailTextField($0) }
+            .bind(to: viewModel.action)
+            .disposed(by: disposeBag)
+
+        signUpView.nameTextField.textField.rx.text
+            .orEmpty
+            .map { SignUpViewModel.Action.didChangeNameTextField($0) }
+            .bind(to: viewModel.action)
+            .disposed(by: disposeBag)
+
+        signUpView.passwordTextField.textField.rx.text
+            .orEmpty
+            .map { SignUpViewModel.Action.didChangePasswordTextField($0) }
+            .bind(to: viewModel.action)
+            .disposed(by: disposeBag)
+
+        signUpView.confirmPasswordTextField.textField.rx.text
+            .orEmpty
+            .map { SignUpViewModel.Action.didChangeConfirmPasswordTextField($0) }
             .bind(to: viewModel.action)
             .disposed(by: disposeBag)
 
@@ -70,11 +95,32 @@ private extension SignUpViewController {
             .disposed(by: disposeBag)
 
         viewModel.state
+            .map(\.isEnabledSignUp)
+            .asDriver(onErrorDriveWith: .empty())
+            .drive(with: self) { owner, isEnabled in
+                owner.signUpView.signUpButton.isEnabled = isEnabled
+            }
+            .disposed(by: disposeBag)
+
+        viewModel.state
             .map(\.isSignUp)
             .filter { $0 }
             .asDriver(onErrorDriveWith: .empty())
             .drive(with: self) { _, _ in
             }
             .disposed(by: disposeBag)
+    }
+
+    private func dismissKeyboard() {
+        let tapGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(addDismissKeyboardGesture)
+        )
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
+    }
+
+    @objc private func addDismissKeyboardGesture() {
+        view.endEditing(true)
     }
 }

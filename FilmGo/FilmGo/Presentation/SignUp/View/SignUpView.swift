@@ -37,13 +37,13 @@ final class SignUpView: UIView {
         return stackView
     }()
 
-    private let emailTextField = FGTextField(type: .email)
+    let emailTextField = FGTextField(type: .email)
 
-    private let nameTextField = FGTextField(type: .name)
+    let nameTextField = FGTextField(type: .name)
 
-    private let passwordTextField = FGTextField(type: .password)
+    let passwordTextField = FGTextField(type: .password)
 
-    private let confirmPasswordTextField = FGTextField(type: .confirmPassword)
+    let confirmPasswordTextField = FGTextField(type: .confirmPassword)
 
     let signUpButton = FGButton(type: .signUp)
 
