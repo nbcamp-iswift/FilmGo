@@ -30,6 +30,11 @@ final class DateTimeCell: UICollectionViewCell {
     func updateLabel(_ text: String) {
         label.text = text
     }
+
+    func updateIsSelected(_ value: Bool) {
+        backgroundColor = value ? .primary300 : .neutrals600
+        label.textColor = value ? .neutrals600 : .neutrals100
+    }
 }
 
 private extension DateTimeCell {
