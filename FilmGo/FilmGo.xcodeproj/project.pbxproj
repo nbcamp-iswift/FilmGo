@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		44E4C98D2DC266110054A1A0 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 44E4C98C2DC266110054A1A0 /* Supabase */; };
 		58A20A8B2DBB4C2300680822 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 58A20A8A2DBB4C2300680822 /* SnapKit */; };
 		58A20A8E2DBB4C8800680822 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 58A20A8D2DBB4C8800680822 /* RxCocoa */; };
 		58A20A902DBB4C8800680822 /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = 58A20A8F2DBB4C8800680822 /* RxRelay */; };
@@ -49,6 +50,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				44E4C98D2DC266110054A1A0 /* Supabase in Frameworks */,
 				58A20A902DBB4C8800680822 /* RxRelay in Frameworks */,
 				58A20A8E2DBB4C8800680822 /* RxCocoa in Frameworks */,
 				58A20A922DBB4C8800680822 /* RxSwift in Frameworks */,
@@ -96,6 +98,7 @@
 				58A20A8D2DBB4C8800680822 /* RxCocoa */,
 				58A20A8F2DBB4C8800680822 /* RxRelay */,
 				58A20A912DBB4C8800680822 /* RxSwift */,
+				44E4C98C2DC266110054A1A0 /* Supabase */,
 			);
 			productName = FilmGo;
 			productReference = 58A20A9F2DBB4E0800680822 /* FilmGo.app */;
@@ -128,6 +131,7 @@
 			packageReferences = (
 				58A20A892DBB4C2300680822 /* XCRemoteSwiftPackageReference "SnapKit" */,
 				58A20A8C2DBB4C8800680822 /* XCRemoteSwiftPackageReference "RxSwift" */,
+				44E4C98B2DC266110054A1A0 /* XCRemoteSwiftPackageReference "supabase-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 58A208F22DBB3C2300680822;
@@ -409,6 +413,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		44E4C98B2DC266110054A1A0 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift.git";
+			requirement = {
+				kind = exactVersion;
+				version = 2.5.1;
+			};
+		};
 		58A20A892DBB4C2300680822 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
@@ -428,6 +440,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		44E4C98C2DC266110054A1A0 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 44E4C98B2DC266110054A1A0 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
 		58A20A8A2DBB4C2300680822 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 58A20A892DBB4C2300680822 /* XCRemoteSwiftPackageReference "SnapKit" */;
