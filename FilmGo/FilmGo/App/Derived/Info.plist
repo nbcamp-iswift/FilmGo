@@ -14,6 +14,8 @@
 	<string>$(MOVIE_DETAIL_PATH)</string>
 	<key>MOVIE_CREDIT_PATH</key>
 	<string>$(MOVIE_CREDIT_PATH)</string>
+	<key>IMAGE_BASE_URL</key>
+	<string>$(IMAGE_BASE_URL)</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
