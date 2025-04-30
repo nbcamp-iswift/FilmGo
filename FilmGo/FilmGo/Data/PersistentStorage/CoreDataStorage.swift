@@ -86,7 +86,7 @@ extension CoreDataStorage {
         saveContext()
     }
 
-    func createOrder(id: Int, movieID: Int, orderedDate: Date, seats:[String]) throws {
+    func createOrder(id: Int, movieID: Int, orderedDate: Date, seats: [String]) throws {
         guard let user = fetchLoggedInUser() else {
             throw CoreDataStorageError.userNotFound
         }
@@ -113,10 +113,14 @@ extension CoreDataStorage {
     func clearAllData() {
         let entityNames = ["User", "Order"]
         for entityName in entityNames {
-            let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: entityName)
+            let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(
+                entityName: entityName
+            )
             let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
             do {
-                try persistentContainer.persistentStoreCoordinator.execute(deleteRequest, with: context)
+                try persistentContainer.persistentStoreCoordinator.execute(
+                    deleteRequest, with: context
+                )
             } catch {
                 print("Error deleting \(entityName): \(error)")
             }

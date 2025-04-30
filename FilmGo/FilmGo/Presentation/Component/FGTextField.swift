@@ -18,7 +18,7 @@ final class FGTextField: UIStackView {
         return label
     }()
 
-    private let textField: UITextField = {
+    let textField: UITextField = {
         let textField = UITextField()
         textField.textColor = .baseWhite
         textField.backgroundColor = .neutrals600

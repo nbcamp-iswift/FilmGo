@@ -10,11 +10,13 @@ import RxSwift
 import RxCocoa
 
 final class SignUpViewModel: ViewModelProtocol {
+    let signUpUseCase: SignUpUseCase
     let state: BehaviorRelay<State>
     let action = PublishRelay<Action>()
     var disposeBag = DisposeBag()
 
-    init() {
+    init(signUpUseCase: SignUpUseCase) {
+        self.signUpUseCase = signUpUseCase
         state = BehaviorRelay(value: State())
         bind()
     }
@@ -32,6 +34,8 @@ final class SignUpViewModel: ViewModelProtocol {
         case .didChangeConfirmPasswordTextField(let input):
             return .just(.setConfirmPassword(input))
         case .didTapSignUpButton:
+            // TODO: isUniqueEmail()로 register를 할지 조건 분기, setIsSignUp 입력으로도 넣음
+            register()
             return .just(.setIsSignUp(true))
         case .didTapLoginButton:
             return .just(.setBackToLogin(true))
@@ -71,6 +75,21 @@ extension SignUpViewModel {
             !state.confirmPassword.isEmpty
         let isPasswordMatched = state.password == state.confirmPassword
         return isFilledEveryTextField && isPasswordMatched
+    }
+
+    func isUniqueEmail() -> Bool {
+        // TODO: fetchUser를 통해 체크
+        return true
+    }
+
+    func register() {
+        let current = state.value
+
+        signUpUseCase.registerUser(
+            email: current.email,
+            name: current.name,
+            password: current.password
+        )
     }
 }
 

@@ -51,7 +51,10 @@ private extension LoginViewController {
             .filter { $0 }
             .asDriver(onErrorDriveWith: .empty())
             .drive(with: self) { owner, _ in
-                let signUpViewModel = SignUpViewModel()
+                let storage = CoreDataStorage()
+                let userRepository = DefaultUserRepository(storage: storage)
+                let signUpUseCae = SignUpUseCase(repository: userRepository)
+                let signUpViewModel = SignUpViewModel(signUpUseCase: signUpUseCae)
                 let signUpViewController = SignUpViewController(viewModel: signUpViewModel)
                 owner.navigationController?.pushViewController(
                     signUpViewController,

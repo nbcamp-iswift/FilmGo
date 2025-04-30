@@ -106,7 +106,8 @@ private extension SignUpViewController {
             .map(\.isSignUp)
             .filter { $0 }
             .asDriver(onErrorDriveWith: .empty())
-            .drive(with: self) { _, _ in
+            .drive(with: self) { owner, _ in
+                owner.navigationController?.popViewController(animated: false)
             }
             .disposed(by: disposeBag)
     }
