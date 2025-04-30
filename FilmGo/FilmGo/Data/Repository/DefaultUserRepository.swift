@@ -22,4 +22,10 @@ final class DefaultUserRepository: UserRepositoryProtocol {
             password: password
         )
     }
+
+    func login(email: String, password: String) -> Bool {
+        // TODO: fetchUser로 유저 불러와서 password 매칭, loginUser로 로그인 처리 후 true 반환
+        // TODO: 매칭 실패 시 false 반환
+        true
+    }
 }

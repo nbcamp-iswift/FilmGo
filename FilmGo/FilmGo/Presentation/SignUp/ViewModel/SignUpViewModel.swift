@@ -84,7 +84,6 @@ extension SignUpViewModel {
 
     func register() {
         let current = state.value
-
         signUpUseCase.registerUser(
             email: current.email,
             name: current.name,

@@ -10,12 +10,13 @@ import RxSwift
 import RxRelay
 
 final class LoginViewModel: ViewModelProtocol {
-    // TODO: UseCase 추가
+    let loginUseCase: LoginUseCase
     let state: BehaviorRelay<State>
     let action = PublishRelay<Action>()
     var disposeBag = DisposeBag()
 
-    init() {
+    init(loginUseCase: LoginUseCase) {
+        self.loginUseCase = loginUseCase
         state = BehaviorRelay(value: State())
         bind()
     }
@@ -23,6 +24,8 @@ final class LoginViewModel: ViewModelProtocol {
     func mutate(action: Action) -> RxSwift.Observable<Mutation> {
         switch action {
         case .didTapLoginButton:
+            let isLoginSuccess = isLoginSuccess()
+            // isLoginSuccess로 조건 분기: false이면 setIsLogoutFailed
             return .concat([
                 .just(.setIsLogin(true)),
                 .just(.setIsLogin(false)),
@@ -42,14 +45,14 @@ final class LoginViewModel: ViewModelProtocol {
     func reduce(state: State, mutation: Mutation) -> State {
         var newState = state
         switch mutation {
-        case .setIsLogin(let isLogin):
-            newState.isLogin = isLogin
         case .setEmail(let input):
             newState.email = input
             newState.isEnabledLogin = setEnabledLoginButton(state: newState)
         case .setPassword(let input):
             newState.password = input
             newState.isEnabledLogin = setEnabledLoginButton(state: newState)
+        case .setIsLogin(let isLogin):
+            newState.isLogin = isLogin
         case .setPushSignUpVC(let isSignUp):
             newState.pushSignUpVC = isSignUp
         }
@@ -60,6 +63,11 @@ final class LoginViewModel: ViewModelProtocol {
 extension LoginViewModel {
     func setEnabledLoginButton(state: State) -> Bool {
         !state.email.isEmpty && !state.password.isEmpty
+    }
+
+    func isLoginSuccess() -> Bool {
+        let current = state.value
+        return loginUseCase.login(email: current.email, password: current.password)
     }
 }
 
@@ -72,17 +80,17 @@ extension LoginViewModel {
     }
 
     enum Mutation {
-        case setIsLogin(Bool)
         case setEmail(String)
         case setPassword(String)
+        case setIsLogin(Bool)
         case setPushSignUpVC(Bool)
     }
 
     struct State {
-        var isLogin: Bool = false
         var email: String = ""
         var password: String = ""
         var isEnabledLogin: Bool = false
+        var isLogin: Bool = false
         var pushSignUpVC: Bool = false
     }
 }
