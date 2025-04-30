@@ -45,7 +45,7 @@ final class SignUpView: UIView {
 
     private let confirmPasswordTextField = FGTextField(type: .confirmPassword)
 
-    private let signUpButton = FGButton(type: .signUp)
+    let signUpButton = FGButton(type: .signUp)
 
     private let loginStackView: UIStackView = {
         let stackView = UIStackView()

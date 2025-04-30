@@ -22,7 +22,7 @@ final class LoginViewController: UIViewController {
 
     @available(*, unavailable)
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        fatalError()
     }
 
     override func loadView() {
@@ -48,11 +48,11 @@ private extension LoginViewController {
 
         viewModel.state
             .map(\.pushSignUpVC)
-            .filter {
-                $0 }
+            .filter { $0 }
             .asDriver(onErrorDriveWith: .empty())
             .drive(with: self) { owner, _ in
-                let signUpViewController = SignUpViewController()
+                let signUpViewModel = SignUpViewModel()
+                let signUpViewController = SignUpViewController(viewModel: signUpViewModel)
                 owner.navigationController?.pushViewController(
                     signUpViewController,
                     animated: false
