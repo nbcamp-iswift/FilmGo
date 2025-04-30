@@ -19,6 +19,8 @@ final class DetailView: UIView {
 
     private let posterImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         return imageView
     }()
 
@@ -99,7 +101,7 @@ final class DetailView: UIView {
             releasedDate: movie.releasedYear
         )
         genresStackView.updateTags(movie.genres)
-        overviewContentLabel.text = "overview가 없어요 ㅠ" // TODO: movie.overview
+        overviewContentLabel.text = movie.overview
         directorContentLabel.text = movie.director
         actorsStackView.updateTags(movie.actors)
     }

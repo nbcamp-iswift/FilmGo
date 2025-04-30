@@ -36,10 +36,7 @@ final class DefaultMovieRepository: MovieRepositoryProtocol {
                             return Int(components.first ?? "") ?? 0
                         }()
 
-                        let director: String = creditDto.crew?
-                            .first(where: { $0.job == "Director" })?
-                            .name ?? ""
-
+                        let director: String = creditDto.crew?.first?.name ?? ""
                         let actors: [String] = creditDto.cast?
                             .prefix(3)
                             .compactMap(\.name) ?? []
