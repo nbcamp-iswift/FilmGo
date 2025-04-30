@@ -79,7 +79,7 @@ extension SignUpViewModel {
 
     func isUniqueEmail() -> Bool {
         // TODO: fetchUser를 통해 체크
-        return true
+        true
     }
 
     func register() {

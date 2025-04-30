@@ -18,7 +18,5 @@ final class SignUpUseCase {
         repository.registerUser(email: email, name: name, password: password)
     }
 
-    func checkDuplicateEmail(email: String) {
-        
-    }
+    func checkDuplicateEmail(email: String) {}
 }

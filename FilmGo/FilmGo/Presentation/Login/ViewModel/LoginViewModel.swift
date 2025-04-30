@@ -27,6 +27,10 @@ final class LoginViewModel: ViewModelProtocol {
                 .just(.setIsLogin(true)),
                 .just(.setIsLogin(false)),
             ])
+        case .didChangeEmailTextField(let input):
+            return .just(.setEmail(input))
+        case .didChangePasswordTextFiedl(let input):
+            return .just(.setPassword(input))
         case .didTapSignUpButton:
             return .concat([
                 .just(.setPushSignUpVC(true)),
@@ -40,6 +44,12 @@ final class LoginViewModel: ViewModelProtocol {
         switch mutation {
         case .setIsLogin(let isLogin):
             newState.isLogin = isLogin
+        case .setEmail(let input):
+            newState.email = input
+            newState.isEnabledLogin = setEnabledLoginButton(state: newState)
+        case .setPassword(let input):
+            newState.password = input
+            newState.isEnabledLogin = setEnabledLoginButton(state: newState)
         case .setPushSignUpVC(let isSignUp):
             newState.pushSignUpVC = isSignUp
         }
@@ -48,18 +58,31 @@ final class LoginViewModel: ViewModelProtocol {
 }
 
 extension LoginViewModel {
+    func setEnabledLoginButton(state: State) -> Bool {
+        !state.email.isEmpty && !state.password.isEmpty
+    }
+}
+
+extension LoginViewModel {
     enum Action {
         case didTapLoginButton
+        case didChangeEmailTextField(String)
+        case didChangePasswordTextFiedl(String)
         case didTapSignUpButton
     }
 
     enum Mutation {
         case setIsLogin(Bool)
+        case setEmail(String)
+        case setPassword(String)
         case setPushSignUpVC(Bool)
     }
 
     struct State {
         var isLogin: Bool = false
+        var email: String = ""
+        var password: String = ""
+        var isEnabledLogin: Bool = false
         var pushSignUpVC: Bool = false
     }
 }

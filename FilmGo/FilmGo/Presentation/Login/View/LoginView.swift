@@ -37,11 +37,11 @@ final class LoginView: UIView {
         return stackView
     }()
 
-    private let emailTextField = FGTextField(type: .email)
+    let emailTextField = FGTextField(type: .email)
 
-    private let passwordTextField = FGTextField(type: .password)
+    let passwordTextField = FGTextField(type: .password)
 
-    private let loginButton = FGButton(type: .login)
+    let loginButton = FGButton(type: .login)
 
     private let signUpStackView: UIStackView = {
         let stackView = UIStackView()
