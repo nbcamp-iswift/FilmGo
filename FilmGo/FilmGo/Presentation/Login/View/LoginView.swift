@@ -57,7 +57,7 @@ final class LoginView: UIView {
         return label
     }()
 
-    private let signUpButton: UIButton = {
+    let signUpButton: UIButton = {
         let button = UIButton()
         button.setTitle("회원가입", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 13.6)

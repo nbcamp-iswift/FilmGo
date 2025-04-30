@@ -15,8 +15,9 @@ final class LoginViewModel: ViewModelProtocol {
     let action = PublishRelay<Action>()
     var disposeBag = DisposeBag()
 
-    init(isLogin: Bool) {
-        state = BehaviorRelay(value: State(isLogin: isLogin))
+    init() {
+        state = BehaviorRelay(value: State())
+        bind()
     }
 
     func mutate(action: Action) -> RxSwift.Observable<Mutation> {
@@ -42,6 +43,7 @@ final class LoginViewModel: ViewModelProtocol {
         case .setPushSignUpVC(let isSignUp):
             newState.pushSignUpVC = isSignUp
         }
+        return newState
     }
 }
 
@@ -57,7 +59,7 @@ extension LoginViewModel {
     }
 
     struct State {
-        var isLogin: Bool
+        var isLogin: Bool = false
         var pushSignUpVC: Bool = false
     }
 }
