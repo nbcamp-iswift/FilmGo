@@ -8,6 +8,8 @@ enum BundleConfigKey: String {
     case movieDetailPath = "MOVIE_DETAIL_PATH"
     case movieCreditPath = "MOVIE_CREDIT_PATH"
     case imageBaseURL = "IMAGE_BASE_URL" // https://developer.themoviedb.org/docs/image-basics
+    case supabaseURL = "SUPABASE_URL"
+    case supabaseKey = "SUPABASE_KEY"
 }
 
 enum BundleConfig {
