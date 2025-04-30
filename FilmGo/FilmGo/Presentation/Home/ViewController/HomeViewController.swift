@@ -83,6 +83,7 @@ private extension HomeViewController {
         title = "FilmGo"
         navigationController?.navigationBar.prefersLargeTitles = true
 
+
         let appearance = UINavigationBarAppearance()
         appearance.configureWithTransparentBackground()
         appearance.backgroundColor = .clear
@@ -158,6 +159,33 @@ private extension HomeViewController {
                 guard let self else { return }
                 applySnapshot(items: $0)
             }
+            .disposed(by: disposeBag)
+
+        homeView.movieCollectionView.rx.itemSelected
+            .subscribe(onNext: { [weak self] indexPath in
+                guard let self else { return }
+                guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
+
+                var movieId: Int
+                switch item {
+                case .nowPlaying(let movie):
+                    movieId = movie.movieId
+                case .popular(let movie):
+                    movieId = movie.movieId
+                }
+                let detailVC = DetailViewController(
+                    viewModel: DetailViewModel(
+                        movieID: movieId,
+                        fetchMovieUseCase:
+                        FetchMovieUseCase(repository:
+                            DefaultMovieRepository(
+                                networkService: DefaultNetworkService()
+                            )
+                        )
+                    )
+                )
+                navigationController?.pushViewController(detailVC, animated: true)
+            })
             .disposed(by: disposeBag)
     }
 }

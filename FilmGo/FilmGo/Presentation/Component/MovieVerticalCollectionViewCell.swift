@@ -64,7 +64,6 @@ final class MovieVerticalCollectionViewCell: UICollectionViewCell {
     }
 
     func update(posterImage: Data, title: String, genre: String, star: String, runtime: String) {
-        // TODO: refactor
         imageView.image = UIImage(data: posterImage)
         titleLabel.text = title
         genreLabel.text = genre
