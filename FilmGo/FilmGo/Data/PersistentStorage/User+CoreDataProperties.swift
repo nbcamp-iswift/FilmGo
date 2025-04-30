@@ -1,22 +1,22 @@
 import Foundation
 import CoreData
 
-
 extension User {
+
     @nonobjc public class func fetchRequest() -> NSFetchRequest<User> {
         return NSFetchRequest<User>(entityName: "User")
     }
 
-    @NSManaged public var id: Int64
-    @NSManaged public var name: String
     @NSManaged public var email: String
-    @NSManaged public var password: String
+    @NSManaged public var id: Int64
     @NSManaged public var isLogin: Bool
-    @NSManaged public var orders: NSOrderedSet
+    @NSManaged public var name: String
+    @NSManaged public var password: String
+    @NSManaged public var orders: NSOrderedSet?
 }
 
-// MARK: Generated accessors for orders
 extension User {
+
     @objc(insertObject:inOrdersAtIndex:)
     @NSManaged public func insertIntoOrders(_ value: Order, at idx: Int)
 
@@ -46,4 +46,9 @@ extension User {
 
     @objc(removeOrders:)
     @NSManaged public func removeFromOrders(_ values: NSOrderedSet)
+
+}
+
+extension User : Identifiable {
+
 }
