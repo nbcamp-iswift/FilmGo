@@ -22,12 +22,11 @@ final class DefaultMovieRepository: MovieRepositoryProtocol {
         // Observable return
         return Single.zip(detailReq, creditReq)
             .flatMap { detailDto, creditDto -> Single<Movie> in
-                guard let posterPath = detailDto.posterPath,
-                      let posterURL = URL(string: posterPath) else {
+                guard let posterPath = detailDto.posterPath else {
                     return Single.error(NetworkError.invalidURL)
                 }
 
-                return self.networkService.downloadImage(from: posterURL)
+                return self.networkService.downloadImage(path: posterPath, size: .w500)
                     .map { posterData in
                         let movieId = detailDto.id ?? 0
                         let genres = detailDto.genres?.compactMap(\.name) ?? []
@@ -75,8 +74,7 @@ final class DefaultMovieRepository: MovieRepositoryProtocol {
             .flatMap { res in
                 let movieSingles: [Single<MovieBrief>] = res.results
                     .map { summary in
-                        guard let posterPath = summary.posterPath,
-                              let posterURL = URL(string: posterPath) else {
+                        guard let posterPath = summary.posterPath else {
                             return Single.error(NetworkError.invalidURL)
                         }
 
@@ -87,7 +85,7 @@ final class DefaultMovieRepository: MovieRepositoryProtocol {
                         )
 
                         let posterReq: Single<Data> = self.networkService.downloadImage(
-                            from: posterURL
+                            path: posterPath, size: .w500
                         )
 
                         return Single.zip(detailReq, posterReq)
@@ -137,8 +135,7 @@ final class DefaultMovieRepository: MovieRepositoryProtocol {
             .flatMap { res in
                 let movieSingles: [Single<MovieBrief>] = res.results
                     .map { summary in
-                        guard let posterPath = summary.posterPath,
-                              let posterURL = URL(string: posterPath) else {
+                        guard let posterPath = summary.posterPath else {
                             return Single.error(NetworkError.invalidURL)
                         }
 
@@ -150,7 +147,7 @@ final class DefaultMovieRepository: MovieRepositoryProtocol {
                         )
 
                         let posterReq: Single<Data> = self.networkService.downloadImage(
-                            from: posterURL
+                            path: posterPath, size: .w500
                         )
 
                         return Single.zip(detailReq, posterReq)

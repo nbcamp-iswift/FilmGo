@@ -1,6 +1,11 @@
 import Foundation
 import RxSwift
 
+// https://www.themoviedb.org/talk/53c11d4ec3a3684cf4006400
+enum TMDBPosterSize: String {
+    case w92, w154, w185, w342, w500, w780, original
+}
+
 enum NetworkError: Error {
     case invalidURL
     case invalidRequest
@@ -29,9 +34,37 @@ protocol NetworkServiceProtocol {
     ) -> Single<T>
 
     func downloadImage(from url: URL) -> Single<Data>
+    func downloadImage(
+        path: String,
+        size: TMDBPosterSize
+    ) -> Single<Data>
 }
 
 final class DefaultNetworkService: NetworkServiceProtocol {
+    func downloadImage(
+        path: String,
+        size: TMDBPosterSize = .w500
+    ) -> Single<Data> {
+        let base = BundleConfig.get(.imageBaseURL)
+        let urlString = base + "/\(size.rawValue)" + path
+        guard let url = URL(string: urlString) else {
+            return .error(NetworkError.invalidURL)
+        }
+        return downloadImage(from: url)
+    }
+
+    func request<T: Decodable>(
+        type: NetworkServiceType,
+        queryParameters: (some Encodable)?
+    ) -> Single<T> {
+        request(
+            url: type.url,
+            method: type.method,
+            queryParameters: queryParameters,
+            headers: type.headers
+        )
+    }
+
     func downloadImage(from url: URL) -> Single<Data> {
         Single<Data>.create { [weak self] single in
             guard let self else {
@@ -55,18 +88,6 @@ final class DefaultNetworkService: NetworkServiceProtocol {
             task.resume()
             return Disposables.create { task.cancel() }
         }
-    }
-
-    func request<T: Decodable>(
-        type: NetworkServiceType,
-        queryParameters: (some Encodable)?
-    ) -> Single<T> {
-        request(
-            url: type.url,
-            method: type.method,
-            queryParameters: queryParameters,
-            headers: type.headers
-        )
     }
 
     func request<T: Decodable>(
@@ -106,6 +127,7 @@ final class DefaultNetworkService: NetworkServiceProtocol {
 
             var req = URLRequest(url: fullURL)
             req.httpMethod = method
+            req.timeoutInterval = 10
             headers.forEach { key, value in
                 req.setValue(value, forHTTPHeaderField: key)
             }
@@ -136,8 +158,22 @@ final class DefaultNetworkService: NetworkServiceProtocol {
                 do {
                     let decoded = try JSONDecoder().decode(T.self, from: data)
                     single(.success(decoded))
+                } catch let decodingError as DecodingError {
+                    switch decodingError {
+                    case .typeMismatch(let type, let context):
+                        print("Type mismatch: \(type), context: \(context.debugDescription)")
+                    case .valueNotFound(let type, let context):
+                        print("Value not found: \(type), context: \(context.debugDescription)")
+                    case .keyNotFound(let key, let context):
+                        print("Key not found: \(key), context: \(context.debugDescription)")
+                    case .dataCorrupted(let context):
+                        print("Data corrupted: \(context.debugDescription)")
+                    @unknown default:
+                        print("Unknown decoding error")
+                    }
+                    single(.failure(NetworkError.decodingFailed(decodingError)))
                 } catch {
-                    single(.failure(NetworkError.decodingFailed(error)))
+                    single(.failure(NetworkError.network(error)))
                 }
             }
 
