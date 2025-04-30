@@ -7,9 +7,14 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class OrderView: UIView {
-    private var dataSource: UICollectionViewDiffableDataSource<OrderSection, String>?
+    let didTapCell = PublishRelay<IndexPath>()
+
+    private var dataSource: UICollectionViewDiffableDataSource<OrderSection, DateTimeItem>?
+    private let disposeBag = DisposeBag()
 
     private let headerView: UIView = {
         let view = UIView()
@@ -70,6 +75,34 @@ final class OrderView: UIView {
             NSCollectionLayoutSection in OrderSection(sectionIndex).layoutSection
         }
     }
+
+    func updateSelectedDate(at index: Int) {
+        guard var snapshot = dataSource?.snapshot() else { return }
+        let oldItems = snapshot.itemIdentifiers(inSection: .date)
+
+        var newItems = oldItems.map { DateTimeItem(title: $0.title, isSelected: false) }
+        newItems[index].isSelected = true
+
+        snapshot.deleteItems(oldItems)
+        snapshot.appendItems(newItems, toSection: .date)
+        dataSource?.apply(snapshot)
+    }
+
+    func updateSelectedTime(at index: Int) {
+        guard var snapshot = dataSource?.snapshot() else { return }
+        let oldItems = snapshot.itemIdentifiers(inSection: .time)
+
+        var newItems = oldItems.map { DateTimeItem(title: $0.title, isSelected: false) }
+        newItems[index].isSelected = true
+
+        snapshot.deleteItems(oldItems)
+        snapshot.appendItems(newItems, toSection: .time)
+        dataSource?.apply(snapshot)
+    }
+
+    func updateSelectSeatButtonIsEnabled(_ isEnabled: Bool) {
+        selectSeatButton.isEnabled = isEnabled
+    }
 }
 
 private extension OrderView {
@@ -78,6 +111,7 @@ private extension OrderView {
         setHierarchy()
         setConstraints()
         setDataSource()
+        setBindings()
     }
 
     func setAttributes() {
@@ -132,7 +166,8 @@ private extension OrderView {
                 withReuseIdentifier: DateTimeCell.identifier,
                 for: indexPath,
             ) as? DateTimeCell else { fatalError() }
-            cell.updateLabel(item)
+            cell.updateLabel(item.title)
+            cell.updateIsSelected(item.isSelected)
             return cell
         }
 
@@ -152,13 +187,35 @@ private extension OrderView {
             return header
         }
 
-        var snapshot = NSDiffableDataSourceSnapshot<OrderSection, String>()
+        var snapshot = NSDiffableDataSourceSnapshot<OrderSection, DateTimeItem>()
         snapshot.appendSections([.date, .time])
-        snapshot.appendItems(["오늘", "내일", "월", "화", "수"], toSection: .date)
         snapshot.appendItems(
-            ["10:00", "12:30", "15:00", "17:30", "20:00", "22:30"],
+            [
+                DateTimeItem(title: "오늘"),
+                DateTimeItem(title: "내일"),
+                DateTimeItem(title: "월"),
+                DateTimeItem(title: "화"),
+                DateTimeItem(title: "수"),
+            ],
+            toSection: .date,
+        )
+        snapshot.appendItems(
+            [
+                DateTimeItem(title: "10:00"),
+                DateTimeItem(title: "12:30"),
+                DateTimeItem(title: "15:00"),
+                DateTimeItem(title: "17:30"),
+                DateTimeItem(title: "20:00"),
+                DateTimeItem(title: "22:30"),
+            ],
             toSection: .time,
         )
         dataSource?.apply(snapshot)
+    }
+
+    func setBindings() {
+        collectionView.rx.itemSelected
+            .bind(to: didTapCell)
+            .disposed(by: disposeBag)
     }
 }

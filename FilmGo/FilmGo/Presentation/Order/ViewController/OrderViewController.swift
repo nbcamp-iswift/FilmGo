@@ -7,9 +7,14 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxRelay
 
 final class OrderViewController: UIViewController {
     private let orderView = OrderView()
+
+    private let viewModel = OrderViewModel()
+    private let disposeBag = DisposeBag()
 
     override func loadView() {
         view = orderView
@@ -22,5 +27,47 @@ final class OrderViewController: UIViewController {
 }
 
 private extension OrderViewController {
-    func configure() {}
+    func configure() {
+        setBindings()
+    }
+
+    func setBindings() {
+        orderView.didTapCell
+            .asDriver(onErrorDriveWith: .empty())
+            .drive { [weak self] indexPath in
+                switch indexPath.section {
+                case 0:
+                    self?.viewModel.action.accept(.selectDate(indexPath.item))
+                case 1:
+                    self?.viewModel.action.accept(.selectTime(indexPath.item))
+                default:
+                    break
+                }
+            }
+            .disposed(by: disposeBag)
+
+        viewModel.state
+            .compactMap(\.selectedDateIndex)
+            .asDriver(onErrorDriveWith: .empty())
+            .drive { [weak self] index in
+                self?.orderView.updateSelectedDate(at: index)
+            }
+            .disposed(by: disposeBag)
+
+        viewModel.state
+            .compactMap(\.selectedTimeIndex)
+            .asDriver(onErrorDriveWith: .empty())
+            .drive { [weak self] index in
+                self?.orderView.updateSelectedTime(at: index)
+            }
+            .disposed(by: disposeBag)
+
+        viewModel.state
+            .compactMap(\.selectSeatButtonIsEnabled)
+            .asDriver(onErrorDriveWith: .empty())
+            .drive { [weak self] isEnabled in
+                self?.orderView.updateSelectSeatButtonIsEnabled(isEnabled)
+            }
+            .disposed(by: disposeBag)
+    }
 }
