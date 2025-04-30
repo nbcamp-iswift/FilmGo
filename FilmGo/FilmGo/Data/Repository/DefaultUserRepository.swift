@@ -28,4 +28,8 @@ final class DefaultUserRepository: UserRepositoryProtocol {
         // TODO: 매칭 실패 시 false 반환
         true
     }
+
+    func logout(userId: Int) {
+        storage.logoutUser(userId: userId)
+    }
 }
