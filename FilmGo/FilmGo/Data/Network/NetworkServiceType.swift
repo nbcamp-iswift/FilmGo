@@ -56,7 +56,10 @@ extension NetworkServiceType {
     }
 
     var headers: [String: String] {
-        ["Authorization": "Bearer \(accessToken)"]
+        [
+            "accept": "application/json",
+            "Authorization": "Bearer \(accessToken)"
+        ]
     }
 
     private func getValue(for key: String) -> String {
