@@ -54,6 +54,7 @@ final class DefaultMovieRepository: MovieRepositoryProtocol {
                             runningTime: runningTime,
                             releasedYear: releasedYear,
                             genres: genres,
+                            overview: detailDto.overview,
                             director: director,
                             actors: actors
                         )

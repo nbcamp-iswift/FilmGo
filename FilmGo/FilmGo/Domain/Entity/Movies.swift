@@ -8,6 +8,7 @@ struct Movie {
     let runningTime: String
     let releasedYear: Int
     let genres: [String]
+    let overview: String
     let director: String
     let actors: [String]
 }
