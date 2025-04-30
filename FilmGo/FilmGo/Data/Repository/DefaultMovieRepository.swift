@@ -22,39 +22,43 @@ final class DefaultMovieRepository: MovieRepositoryProtocol {
         // Observable return
         return Single.zip(detailReq, creditReq)
             .flatMap { detailDto, creditDto -> Single<Movie> in
-                guard let posterURL = URL(string: "") else {
-                    throw NetworkError.invalidURL
+                guard let posterPath = detailDto.posterPath,
+                      let posterURL = URL(string: posterPath) else {
+                    return Single.error(NetworkError.invalidURL)
                 }
 
                 return self.networkService.downloadImage(from: posterURL)
                     .map { posterData in
-                        let genres = detailDto.genres.map(\.name)
-
+                        let movieId = detailDto.id ?? 0
+                        let genres = detailDto.genres?.compactMap(\.name) ?? []
                         let releasedYear: Int = {
-                            let components = detailDto.releaseDate.split(separator: "-")
-                            if let yearStr = components.first,
-                               let year = Int(yearStr) {
-                                return year
-                            }
-                            return 0
+                            guard let releaseDate = detailDto.releaseDate else { return 0 }
+                            let components = releaseDate.split(separator: "-")
+                            return Int(components.first ?? "") ?? 0
                         }()
 
-                        let director: String = creditDto.crew.first(
-                            where: { $0.job == "Director" })?.name ?? "Unknown"
+                        let director: String = creditDto.crew?
+                            .first(where: { $0.job == "Director" })?
+                            .name ?? ""
 
-                        let actors: [String] = creditDto.cast.prefix(3).map(\.name)
-                        let runningTime = "\(detailDto.runtime)"
-                        let voteAverage = (detailDto.voteAverage * 10).rounded() * 0.1
+                        let actors: [String] = creditDto.cast?
+                            .prefix(3)
+                            .compactMap(\.name) ?? []
+
+                        let runningTime = "\(detailDto.runtime ?? 0)"
+                        let voteAverage = ((detailDto.voteAverage ?? 0) * 10).rounded() * 0.1
+                        let title = detailDto.title ?? ""
+                        let overview = detailDto.overview ?? ""
 
                         return Movie(
-                            movieId: detailDto.id,
+                            movieId: movieId,
                             posterImage: posterData,
-                            title: detailDto.title,
+                            title: title,
                             star: voteAverage,
                             runningTime: runningTime,
                             releasedYear: releasedYear,
                             genres: genres,
-                            overview: detailDto.overview,
+                            overview: overview,
                             director: director,
                             actors: actors
                         )
@@ -71,13 +75,15 @@ final class DefaultMovieRepository: MovieRepositoryProtocol {
             .flatMap { res in
                 let movieSingles: [Single<MovieBrief>] = res.results
                     .map { summary in
-                        guard let posterURL = URL(string: summary.posterPath) else {
+                        guard let posterPath = summary.posterPath,
+                              let posterURL = URL(string: posterPath) else {
                             return Single.error(NetworkError.invalidURL)
                         }
 
+                        let summaryId = summary.id ?? 0
                         let detailReq: Single<MovieDetailResponseDTO> = self.networkService.request(
-                            type: .movieDetail(movieID: summary.id),
-                            queryParameters: MovieDetailRequestDTO(movieID: summary.id)
+                            type: .movieDetail(movieID: summaryId),
+                            queryParameters: MovieDetailRequestDTO(movieID: summaryId)
                         )
 
                         let posterReq: Single<Data> = self.networkService.downloadImage(
@@ -86,23 +92,23 @@ final class DefaultMovieRepository: MovieRepositoryProtocol {
 
                         return Single.zip(detailReq, posterReq)
                             .map { detail, posterData in
-                                let genres = detail.genres.map(\.name)
+                                let genres = detail.genres?.compactMap(\.name) ?? []
 
                                 let releaseYear: Int = {
-                                    let components = detail.releaseDate.split(separator: "-")
-                                    if let yearStr = components.first,
-                                       let year = Int(yearStr) {
-                                        return year
-                                    }
-                                    return 0
+                                    guard let releaseDate = detail.releaseDate else { return 0 }
+                                    let components = releaseDate.split(separator: "-")
+                                    return Int(components.first ?? "") ?? 0
                                 }()
-                                let runningTime = "\(detail.runtime)"
-                                let voteAverage = (detail.voteAverage * 10).rounded() * 0.1
+
+                                let runningTime = "\(detail.runtime ?? 0)"
+                                let voteAverage = ((detail.voteAverage ?? 0) * 10).rounded() * 0.1
+
+                                let summaryTitle = summary.title ?? "No Title"
 
                                 return MovieBrief(
-                                    movieId: summary.id,
+                                    movieId: summaryId,
                                     posterImage: posterData,
-                                    title: summary.title,
+                                    title: summaryTitle,
                                     star: voteAverage,
                                     runningTime: runningTime,
                                     releasedYear: releaseYear,
@@ -131,13 +137,16 @@ final class DefaultMovieRepository: MovieRepositoryProtocol {
             .flatMap { res in
                 let movieSingles: [Single<MovieBrief>] = res.results
                     .map { summary in
-                        guard let posterURL = URL(string: summary.posterPath) else {
+                        guard let posterPath = summary.posterPath,
+                              let posterURL = URL(string: posterPath) else {
                             return Single.error(NetworkError.invalidURL)
                         }
 
+                        let summaryId = summary.id ?? 0
+
                         let detailReq: Single<MovieDetailResponseDTO> = self.networkService.request(
-                            type: .movieDetail(movieID: summary.id),
-                            queryParameters: MovieDetailRequestDTO(movieID: summary.id)
+                            type: .movieDetail(movieID: summaryId),
+                            queryParameters: MovieDetailRequestDTO(movieID: summaryId)
                         )
 
                         let posterReq: Single<Data> = self.networkService.downloadImage(
@@ -146,23 +155,22 @@ final class DefaultMovieRepository: MovieRepositoryProtocol {
 
                         return Single.zip(detailReq, posterReq)
                             .map { detail, posterData in
-                                let genres = detail.genres.map(\.name)
+                                let genres = detail.genres?.compactMap(\.name) ?? []
 
                                 let releaseYear: Int = {
-                                    let components = detail.releaseDate.split(separator: "-")
-                                    if let yearStr = components.first,
-                                       let year = Int(yearStr) {
-                                        return year
-                                    }
-                                    return 0
+                                    guard let releaseDate = detail.releaseDate else { return 0 }
+                                    let components = releaseDate.split(separator: "-")
+                                    return Int(components.first ?? "") ?? 0
                                 }()
-                                let runningTime = "\(detail.runtime)"
-                                let voteAverage = (detail.voteAverage * 10).rounded() * 0.1
+
+                                let runningTime = "\(detail.runtime ?? 0)"
+                                let voteAverage = ((detail.voteAverage ?? 0) * 10).rounded() * 0.1
+                                let summaryTitle = summary.title ?? "No Title"
 
                                 return MovieBrief(
-                                    movieId: summary.id,
+                                    movieId: summaryId,
                                     posterImage: posterData,
-                                    title: summary.title,
+                                    title: summaryTitle,
                                     star: voteAverage,
                                     runningTime: runningTime,
                                     releasedYear: releaseYear,
