@@ -65,9 +65,9 @@ final class InfoStackView: UIStackView {
         fatalError()
     }
 
-    func update(runtime: Int, star: String, releasedDate: Int? = nil) {
-        starLabel.text = "\(star)"
-        runtimeLabel.text = "\(runtime) min"
+    func update(runtime: String, star: String, releasedDate: Int? = nil) {
+        starLabel.text = star
+        runtimeLabel.text = runtime + " min"
         if let releasedDate, infoType == .detail {
             releasedYearLabel.text = "\(releasedDate)"
         }
@@ -88,15 +88,24 @@ private extension InfoStackView {
     }
 
     func setHierarchy() {
-        [starImageView, starLabel].forEach {
+        [
+            starImageView,
+            starLabel,
+        ].forEach {
             starStackView.addArrangedSubview($0)
         }
 
-        [runtimeImageView, runtimeLabel].forEach {
+        [
+            runtimeImageView,
+            runtimeLabel,
+        ].forEach {
             runtimeStackView.addArrangedSubview($0)
         }
 
-        [starStackView, runtimeStackView].forEach {
+        [
+            starStackView,
+            runtimeStackView,
+        ].forEach {
             addArrangedSubview($0)
         }
 

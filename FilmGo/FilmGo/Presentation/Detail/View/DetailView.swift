@@ -96,7 +96,7 @@ final class DetailView: UIView {
         posterImageView.image = UIImage(data: movie.posterImage)
         titleLabel.text = movie.title
         infoStackView.update(
-            runtime: Int(movie.runningTime) ?? 0,
+            runtime: movie.runningTime,
             star: movie.star,
             releasedDate: movie.releasedYear
         )
