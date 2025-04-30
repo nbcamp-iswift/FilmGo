@@ -158,20 +158,8 @@ final class DefaultNetworkService: NetworkServiceProtocol {
                 do {
                     let decoded = try JSONDecoder().decode(T.self, from: data)
                     single(.success(decoded))
-                } catch let decodingError as DecodingError {
-                    switch decodingError {
-                    case .typeMismatch(let type, let context):
-                        print("Type mismatch: \(type), context: \(context.debugDescription)")
-                    case .valueNotFound(let type, let context):
-                        print("Value not found: \(type), context: \(context.debugDescription)")
-                    case .keyNotFound(let key, let context):
-                        print("Key not found: \(key), context: \(context.debugDescription)")
-                    case .dataCorrupted(let context):
-                        print("Data corrupted: \(context.debugDescription)")
-                    @unknown default:
-                        print("Unknown decoding error")
-                    }
-                    single(.failure(NetworkError.decodingFailed(decodingError)))
+                } catch let error as DecodingError {
+                    single(.failure(NetworkError.decodingFailed(error)))
                 } catch {
                     single(.failure(NetworkError.network(error)))
                 }
