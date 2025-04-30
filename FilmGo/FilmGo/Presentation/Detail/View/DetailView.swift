@@ -19,6 +19,8 @@ final class DetailView: UIView {
 
     private let posterImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         return imageView
     }()
 
@@ -88,6 +90,20 @@ final class DetailView: UIView {
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError()
+    }
+
+    func update(with movie: Movie) {
+        posterImageView.image = UIImage(data: movie.posterImage)
+        titleLabel.text = movie.title
+        infoStackView.update(
+            runtime: Int(movie.runningTime) ?? 0,
+            star: movie.star,
+            releasedDate: movie.releasedYear
+        )
+        genresStackView.updateTags(movie.genres)
+        overviewContentLabel.text = movie.overview
+        directorContentLabel.text = movie.director
+        actorsStackView.updateTags(movie.actors)
     }
 }
 

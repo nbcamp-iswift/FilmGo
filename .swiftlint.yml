@@ -5,6 +5,8 @@ disabled_rules:
     - static_over_final_class
     - trailing_comma
     - function_body_length
+    - file_length
+    - trailing_closure
 
 opt_in_rules:
     - empty_count
@@ -38,9 +40,6 @@ type_body_length:
 file_length:
     warning: 200
     error: 400
-
-trailing_closure:
-    severity: warning
 
 force_unwrapping:
     severity: error

@@ -208,6 +208,8 @@
 /* Begin XCBuildConfiguration section */
 		58A209282DBB3C2400680822 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 58A208FD2DBB3C2300680822 /* FilmGo */;
+			baseConfigurationReferenceRelativePath = App/Derived/Config.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -263,7 +265,7 @@
 		58A2092A2DBB3C2400680822 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReferenceAnchor = 58A208FD2DBB3C2300680822 /* FilmGo */;
-			baseConfigurationReferenceRelativePath = Resource/Config.xcconfig;
+			baseConfigurationReferenceRelativePath = App/Derived/Config.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;

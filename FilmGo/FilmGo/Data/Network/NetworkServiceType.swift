@@ -1,5 +1,24 @@
 import Foundation
 
+enum BundleConfigKey: String {
+    case baseURL = "BASE_API_URL"
+    case accessToken = "ACCESS_TOKEN"
+    case nowPlayingPath = "NOW_PLAYING_PATH"
+    case popularPath = "MOVIE_POPULAR_PATH"
+    case movieDetailPath = "MOVIE_DETAIL_PATH"
+    case movieCreditPath = "MOVIE_CREDIT_PATH"
+    case imageBaseURL = "IMAGE_BASE_URL" // https://developer.themoviedb.org/docs/image-basics
+}
+
+enum BundleConfig {
+    static func get(_ key: BundleConfigKey) -> String {
+        guard let value = Bundle.main.infoDictionary?[key.rawValue] as? String else {
+            fatalError("Missing config value for key: \(key.rawValue)")
+        }
+        return value
+    }
+}
+
 enum NetworkServiceType {
     case nowPlaying
     case popular
@@ -9,44 +28,31 @@ enum NetworkServiceType {
 
 extension NetworkServiceType {
     private var baseURL: String {
-        getValue(for: "API_BASE_URL")
+        BundleConfig.get(.baseURL)
     }
 
     private var accessToken: String {
-        getValue(for: "ACCESS_TOKEN")
+        BundleConfig.get(.accessToken)
     }
 
-    private var nowPlayingPath: String {
-        getValue(for: "NOW_PLAYING_PATH")
-    }
-
-    private var popularPath: String {
-        getValue(for: "POPULAR_PATH")
-    }
-
-    private var movieDetailPath: String {
-        getValue(for: "MOVIE_DETAIL_PATH")
-    }
-
-    private var movieCreditPath: String {
-        getValue(for: "MOVIE_CREDIT_PATH")
+    private var path: String {
+        switch self {
+        case .nowPlaying:
+            return BundleConfig.get(.nowPlayingPath)
+        case .popular:
+            return BundleConfig.get(.popularPath)
+        case .movieDetail(let id):
+            return BundleConfig.get(.movieDetailPath)
+                .replacingOccurrences(of: "{movie_id}", with: "\(id)")
+        case .movieCredit(let id):
+            return BundleConfig.get(.movieCreditPath)
+                .replacingOccurrences(of: "{movie_id}", with: "\(id)")
+        }
     }
 
     var url: URL {
-        let fullPath: String
-        switch self {
-        case .nowPlaying:
-            fullPath = nowPlayingPath
-        case .popular:
-            fullPath = popularPath
-        case .movieDetail(let id):
-            fullPath = movieDetailPath.replacingOccurrences(of: "{movie_id}", with: "\(id)")
-        case .movieCredit(let id):
-            fullPath = movieCreditPath.replacingOccurrences(of: "{movie_id}", with: "\(id)")
-        }
-
-        guard let url = URL(string: baseURL + fullPath) else {
-            fatalError("NetworkServiceType: Failed to Create a full length URL")
+        guard let url = URL(string: baseURL + path) else {
+            fatalError("Invalid URL for NetworkServiceType")
         }
         return url
     }
@@ -56,13 +62,9 @@ extension NetworkServiceType {
     }
 
     var headers: [String: String] {
-        ["Authorization": "Bearer \(accessToken)"]
-    }
-
-    private func getValue(for key: String) -> String {
-        guard let value = Bundle.main.infoDictionary?[key] as? String else {
-            fatalError("Failed to retrieve key: \(key) from info.plist")
-        }
-        return value
+        [
+            "accept": "application/json",
+            "Authorization": "Bearer \(accessToken)"
+        ]
     }
 }
