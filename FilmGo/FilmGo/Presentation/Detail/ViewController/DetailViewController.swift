@@ -45,7 +45,8 @@ extension DetailViewController {
 
         viewModel.state
             .compactMap(\.movie)
-            .bind { [weak self] in // TODO: Driver로 마이그레이션
+            .asDriver(onErrorDriveWith: .empty())
+            .drive { [weak self] in
                 self?.detailView.update(with: $0)
             }
             .disposed(by: disposeBag)
