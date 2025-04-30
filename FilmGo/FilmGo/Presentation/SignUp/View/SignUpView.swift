@@ -16,7 +16,7 @@ final class SignUpView: UIView {
         return view
     }()
 
-    private let backButton: UIButton = {
+    let backButton: UIButton = {
         let button = UIButton()
         button.setImage(.back, for: .normal)
         return button
@@ -61,7 +61,7 @@ final class SignUpView: UIView {
         return label
     }()
 
-    private let loginButton: UIButton = {
+    let loginButton: UIButton = {
         let button = UIButton()
         button.setTitle("로그인", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 13.6)

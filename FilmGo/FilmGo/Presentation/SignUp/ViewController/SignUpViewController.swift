@@ -32,6 +32,11 @@ final class SignUpViewController: UIViewController {
         super.viewDidLoad()
         configure()
     }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.isHidden = true
+    }
 }
 
 private extension SignUpViewController {
@@ -40,13 +45,33 @@ private extension SignUpViewController {
     }
 
     func setBindings() {
+        signUpView.backButton.rx.tap
+            .map { SignUpViewModel.Action.didTapBackButton }
+            .bind(to: viewModel.action)
+            .disposed(by: disposeBag)
+
         signUpView.signUpButton.rx.tap
             .map { SignUpViewModel.Action.didTapSignUpButton }
             .bind(to: viewModel.action)
             .disposed(by: disposeBag)
 
+        signUpView.loginButton.rx.tap
+            .map { SignUpViewModel.Action.didTapLoginButton }
+            .bind(to: viewModel.action)
+            .disposed(by: disposeBag)
+
+        viewModel.state
+            .map(\.backToLogin)
+            .filter { $0 }
+            .asDriver(onErrorDriveWith: .empty())
+            .drive(with: self) { owner, _ in
+                owner.navigationController?.popViewController(animated: false)
+            }
+            .disposed(by: disposeBag)
+
         viewModel.state
             .map(\.isSignUp)
+            .filter { $0 }
             .asDriver(onErrorDriveWith: .empty())
             .drive(with: self) { _, _ in
             }
