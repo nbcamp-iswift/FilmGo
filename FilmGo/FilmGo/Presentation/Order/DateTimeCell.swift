@@ -1,5 +1,5 @@
 //
-//  OrderItemCell.swift
+//  DateTimeCell.swift
 //  FilmGo
 //
 //  Created by youseokhwan on 4/29/25.
@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class OrderItemCell: UICollectionViewCell {
+final class DateTimeCell: UICollectionViewCell {
     private let label: UILabel = {
         let label = UILabel()
         label.text = "label"
@@ -32,7 +32,7 @@ final class OrderItemCell: UICollectionViewCell {
     }
 }
 
-private extension OrderItemCell {
+private extension DateTimeCell {
     func configure() {
         setAttributes()
         setHierarchy()

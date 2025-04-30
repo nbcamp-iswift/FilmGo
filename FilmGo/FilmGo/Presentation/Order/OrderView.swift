@@ -42,8 +42,8 @@ final class OrderView: UIView {
         collectionView.backgroundColor = .baseBlack
         collectionView.isScrollEnabled = false
         collectionView.register(
-            OrderItemCell.self,
-            forCellWithReuseIdentifier: OrderItemCell.identifier
+            DateTimeCell.self,
+            forCellWithReuseIdentifier: DateTimeCell.identifier
         )
         collectionView.register(
             SectionHeader.self,
@@ -129,9 +129,9 @@ private extension OrderView {
     func setDataSource() {
         dataSource = .init(collectionView: collectionView) { collectionView, indexPath, item in
             guard let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: OrderItemCell.identifier,
+                withReuseIdentifier: DateTimeCell.identifier,
                 for: indexPath,
-            ) as? OrderItemCell else { fatalError() }
+            ) as? DateTimeCell else { fatalError() }
             cell.updateLabel(item)
             return cell
         }
