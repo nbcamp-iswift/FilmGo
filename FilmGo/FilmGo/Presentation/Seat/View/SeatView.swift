@@ -81,6 +81,16 @@ final class SeatView: UIView {
         dataSource?.apply(newSnapshot)
     }
 
+    func updateSeatsLabel(_ seats: [SeatItem]) {
+        selectedSeatsLabel.text = seats.isEmpty
+            ? "좌석을 선택해 주세요"
+            : "선택한 좌석: " + seats.map { "\($0.seatNumber)" }.joined(separator: ", ")
+    }
+
+    func udpatePayButtonIsEnabled(_ isEnabled: Bool) {
+        payButton.isEnabled = isEnabled
+    }
+
     private func createLayout() -> UICollectionViewLayout {
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0 / 8.0),

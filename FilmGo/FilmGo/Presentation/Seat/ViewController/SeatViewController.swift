@@ -56,6 +56,15 @@ extension SeatViewController {
             }
             .disposed(by: disposeBag)
 
+        viewModel.state
+            .compactMap(\.selectingSeatsByCurrentUser)
+            .asDriver(onErrorDriveWith: .empty())
+            .drive { [weak self] seats in
+                self?.seatView.updateSeatsLabel(seats)
+                self?.seatView.udpatePayButtonIsEnabled(!seats.isEmpty)
+            }
+            .disposed(by: disposeBag)
+
         seatView.didTapCell
             .asDriver(onErrorDriveWith: .empty())
             .drive { [weak self] indexPath in
