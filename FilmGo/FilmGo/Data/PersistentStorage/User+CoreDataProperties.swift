@@ -20,7 +20,7 @@ extension User {
     @objc(insertObject:inOrdersAtIndex:)
     @NSManaged public func insertIntoOrders(_ value: Order, at idx: Int)
 
-    @objc(removeObjectFro/Users/seunghojang/Documents/nbcamps/FilmGo/FilmGo/FilmGo/App/Derived/Info.plistmOrdersAtIndex:)
+    @objc(removeObjectFromOrdersAtIndex:)
     @NSManaged public func removeFromOrders(at idx: Int)
 
     @objc(insertOrders:atIndexes:)
