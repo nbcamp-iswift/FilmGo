@@ -24,9 +24,9 @@ final class SeatCell: UICollectionViewCell {
     func updateLayout(for state: SeatItem.State) {
         switch state {
         case .selectable:
-            backgroundColor = .neutrals600
+            backgroundColor = .neutrals200
         case .alreadySelected:
-            backgroundColor = .neutrals100
+            backgroundColor = .neutrals600
         case .selecting:
             backgroundColor = .primary300
         }

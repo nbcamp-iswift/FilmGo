@@ -21,24 +21,63 @@ final class SeatViewModel: ViewModelProtocol {
     }
 
     func mutate(action: Action) -> Observable<Mutation> {
-        switch action {}
+        switch action {
+        case .viewDidLoad:
+            .just(.startListening)
+        case .didTapCell(let seatNumber):
+            .just(.selectSeat(seatNumber))
+        }
     }
 
     func reduce(state: State, mutation: Mutation) -> State {
         var newState = state
 
-        switch mutation {}
+        // TODO: Domain 및 Data Layer로 책임 분리 필요
+        switch mutation {
+        case .startListening:
+            SupabaseService.shared.startListening(for: state.movie.movieId)
+            SupabaseService.shared.selectedSeats
+                .subscribe(onNext: { [weak self] seats in
+                    guard let self else { return }
+                    self.state.accept(.init(
+                        movie: state.movie,
+                        selectedSeats: seats,
+                        selectingSeatsByCurrentUser: seats.filter {
+                            $0.userID == CoreDataStorage.shared.fetchLoggedInUser()?.id.uuidString
+                                && $0.state == .selecting
+                        }
+                    ))
+                })
+                .disposed(by: disposeBag)
+        case .selectSeat(let seatNumber):
+            SupabaseService.shared.toggleSelectedSeat(
+                movieID: state.movie.movieId,
+                seatNumber: seatNumber,
+            )
+        }
 
         return newState
+    }
+
+    deinit {
+        SupabaseService.shared.endListening()
     }
 }
 
 extension SeatViewModel {
-    enum Action {}
+    enum Action {
+        case viewDidLoad
+        case didTapCell(Int)
+    }
 
-    enum Mutation {}
+    enum Mutation {
+        case startListening
+        case selectSeat(Int)
+    }
 
     struct State {
         var movie: Movie
+        var selectedSeats = [SeatItem]()
+        var selectingSeatsByCurrentUser = [SeatItem]()
     }
 }

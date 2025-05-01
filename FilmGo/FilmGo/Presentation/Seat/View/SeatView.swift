@@ -65,6 +65,32 @@ final class SeatView: UIView {
         fatalError()
     }
 
+    func updateSelectedSeats(_ selectedSeats: [SeatItem]) {
+        var seats = (0 ..< 64).map {
+            SeatItem(seatNumber: $0, userID: "", state: .selectable)
+        }
+        selectedSeats.forEach {
+            seats[$0.seatNumber].userID = $0.userID
+            seats[$0.seatNumber].state = $0.state
+        }
+
+        var newSnapshot = NSDiffableDataSourceSnapshot<Section, SeatItem>()
+        newSnapshot.appendSections([.main])
+        newSnapshot.appendItems(seats)
+
+        dataSource?.apply(newSnapshot)
+    }
+
+    func updateSeatsLabel(_ seats: [SeatItem]) {
+        selectedSeatsLabel.text = seats.isEmpty
+            ? "좌석을 선택해 주세요"
+            : "선택한 좌석: " + seats.map { "\($0.seatNumber)" }.joined(separator: ", ")
+    }
+
+    func udpatePayButtonIsEnabled(_ isEnabled: Bool) {
+        payButton.isEnabled = isEnabled
+    }
+
     private func createLayout() -> UICollectionViewLayout {
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0 / 8.0),
@@ -100,6 +126,7 @@ private extension SeatView {
         setHierarchy()
         setConstraints()
         setDataSource()
+        setBindings()
     }
 
     func setAttributes() {
@@ -157,9 +184,17 @@ private extension SeatView {
         var snapshot = NSDiffableDataSourceSnapshot<Section, SeatItem>()
         snapshot.appendSections([.main])
         snapshot.appendItems(
-            (0 ..< 64).map { SeatItem(number: $0, state: .selectable) }
+            (0 ..< 64).map {
+                SeatItem(seatNumber: $0, userID: "", state: .selectable)
+            }
         )
         dataSource?.apply(snapshot)
+    }
+
+    func setBindings() {
+        collectionView.rx.itemSelected
+            .bind(to: didTapCell)
+            .disposed(by: disposeBag)
     }
 }
 
