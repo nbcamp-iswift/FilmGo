@@ -17,6 +17,7 @@ protocol ImageCacheServiceProtocol {
     func setData(_ data: Data, for key: String, option: CacheOption, type: ImageServiceType)
     func removeData(for key: String, option: CacheOption, type: ImageServiceType)
     func clearCache(option: CacheOption, type: ImageServiceType)
+
     func loadImage(
         path: String,
         size: TMDBPosterSize,
@@ -24,16 +25,17 @@ protocol ImageCacheServiceProtocol {
         type: ImageServiceType,
         imageDownloader: @escaping (String, TMDBPosterSize) -> Single<Data>
     ) -> Single<Data>
+
     func loadProgressiveImage(
         path: String,
         lowResSize: TMDBPosterSize,
         highResSize: TMDBPosterSize,
         delay: RxTimeInterval,
         imageDownloader: @escaping (String, TMDBPosterSize) -> Single<Data>
-    ) -> Single<Data>
+    ) -> Observable<Data>
 }
 
-final class ImageCacheService {
+final class ImageCacheService: ImageCacheServiceProtocol {
     static let shared = ImageCacheService()
     private let cache = NSCache<NSString, NSData>()
     private let fileManager = FileManager.default
@@ -128,14 +130,14 @@ final class ImageCacheService {
         size: TMDBPosterSize,
         option: CacheOption = .memory,
         type: ImageServiceType = .network,
-        imageDownLoader: @escaping (String, TMDBPosterSize) -> Single<Data>
+        imageDownloader: @escaping (String, TMDBPosterSize) -> Single<Data>
     ) -> Single<Data> {
         let key = "\(size.rawValue)_\(path)".replacingOccurrences(of: "/", with: "_")
         if let cacheData = imageData(for: key, option: option, type: type) {
             return .just(cacheData)
         }
 
-        return imageDownLoader(path, size)
+        return imageDownloader(path, size)
             .do(onSuccess: { data in
                 self.setData(data, for: key, option: option, type: type)
             }, onError: { error in
@@ -156,7 +158,7 @@ final class ImageCacheService {
         let lowResData = loadImage(
             path: path,
             size: lowResSize,
-            imageDownLoader: imageDownloader
+            imageDownloader: imageDownloader
         ).asObservable()
 
         // highresImage network load
@@ -166,7 +168,7 @@ final class ImageCacheService {
                 self.loadImage(
                     path: path,
                     size: highResSize,
-                    imageDownLoader: imageDownloader
+                    imageDownloader: imageDownloader
                 ).asObservable()
             }
 

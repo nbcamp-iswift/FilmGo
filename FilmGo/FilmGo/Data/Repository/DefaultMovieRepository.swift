@@ -1,18 +1,24 @@
-import Foundation
+import UIKit
 import RxSwift
 
 final class DefaultMovieRepository: MovieRepositoryProtocol {
     private let networkService: NetworkServiceProtocol
-    private let imageCacheService: ImageCacheService
+    private let imageCacheService: ImageCacheServiceProtocol
+    private let storage: CoreDataStorage
 
     init(
         networkService: NetworkServiceProtocol,
-        imageCacheService: ImageCacheService = .shared
+        imageCacheService: ImageCacheServiceProtocol,
+        storage: CoreDataStorage
     ) {
         self.networkService = networkService
         self.imageCacheService = imageCacheService
+        self.storage = storage
     }
+}
 
+// MARK: - Network
+extension DefaultMovieRepository {
     func fetchMovieEntity(id: Int) -> Single<Movie> {
         let detailReq: Single<MovieDetailResponseDTO> = networkService.request(
             type: .movieDetail(movieID: id),
@@ -33,24 +39,20 @@ final class DefaultMovieRepository: MovieRepositoryProtocol {
     }
 
     func fetchPopularMovies(page: Int) -> Single<PaginatedMovies> {
-        fetchMovieList(
-            page: page,
-            endPoint: .popular
-        )
+        fetchMovieList(page: page, endPoint: .popular)
     }
 
     func fetchNowPlayingMovies(page: Int) -> Single<PaginatedMovies> {
-        fetchMovieList(
-            page: page,
-            endPoint: .nowPlaying
-        )
+        fetchMovieList(page: page, endPoint: .nowPlaying)
     }
 
     private func mapToMovieEntity(
         detailDTO: MovieDetailResponseDTO,
         creditDTO: MovieCreditResponseDTO,
     ) -> Movie {
-        let releaseYear = detailDTO.releaseDate?.split(separator: "-").first
+        let releaseYear = detailDTO.releaseDate?
+            .split(separator: "-")
+            .first
             .flatMap { Int($0) } ?? 0
 
         let genres = detailDTO.genres?.compactMap(\.name) ?? []
@@ -86,6 +88,9 @@ final class DefaultMovieRepository: MovieRepositoryProtocol {
                     .map { self.fetchMovieEntity(id: $0) }
 
                 return Single.zip(movieSingles)
+                    .do(onSuccess: { [weak self] movies in
+                        self?.storage.saveMovies(movies)
+                    })
                     .map { movies in
                         PaginatedMovies(
                             currentPage: res.page,
@@ -94,5 +99,56 @@ final class DefaultMovieRepository: MovieRepositoryProtocol {
                         )
                     }
             }
+    }
+}
+
+// MARK: - ImageCacheService
+extension DefaultMovieRepository {
+    func fetchPosterImage(
+        for movie: Movie,
+        size: TMDBPosterSize = .w500
+    ) -> Single<UIImage?> {
+        guard !movie.posterImagePath.isEmpty else {
+            return .just(nil)
+        }
+
+        return imageCacheService.loadImage(
+            path: movie.posterImagePath,
+            size: size,
+            option: .memory,
+            type: .network
+        ) { path, size in
+            return self.networkService.downloadImage(path: path, size: size)
+        }
+        .map { UIImage(data: $0) }
+    }
+
+    func fetchPosterProgressiveImage(
+        for movie: Movie
+    ) -> Observable<UIImage?> {
+        guard !movie.posterImagePath.isEmpty else {
+            return .just(nil)
+        }
+
+        return imageCacheService.loadProgressiveImage(
+            path: movie.posterImagePath,
+            lowResSize: .w92,
+            highResSize: .original,
+            delay: .microseconds(400)
+        ) { path, size in
+            return self.networkService.downloadImage(path: path, size: size)
+        }
+        .map { UIImage(data: $0) }
+    }
+}
+
+// MARK: - Core Data
+extension DefaultMovieRepository {
+    func fetchMoviesByTitle(movieTitle: String) -> [Movie] {
+        return storage.searchMovie(movieTitle: movieTitle)
+    }
+
+    func updateMovieImageData(movieId: Int, imageData: Data) {
+        storage.saveMovieImage(id: movieId, imageData: imageData)
     }
 }
