@@ -19,6 +19,10 @@ final class DefaultUserRepository: UserRepositoryProtocol {
         storage.loginUser(email: email, password: password)
     }
 
+    func getCurrentUser() -> User? {
+        storage.fetchLoggedInUser()
+    }
+
     func logoutCurrentUser() {
         /// Assumption: Only one user(loggedIn.True) can logout
         /// Logic:      Fetch Loggedin User, if not just return

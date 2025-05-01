@@ -24,7 +24,8 @@ final class MyPageViewModel: ViewModelProtocol {
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .viewDidLoad:
-            return .empty()
+            let user = useCase.getUser()
+            return .just(.setUserInfo(user))
         case .didTapLogout:
             useCase.logout()
             return .just(.setIsLogout(true))
@@ -34,9 +35,8 @@ final class MyPageViewModel: ViewModelProtocol {
     func reduce(state: State, mutation: Mutation) -> State {
         var newState = state
         switch mutation {
-        case .setUserInfo(let name, let email):
-            newState.name = name
-            newState.email = email
+        case .setUserInfo(let user):
+            newState.user = user
         case .setIsLogout(let isLogout):
             newState.isLogout = isLogout
         }
@@ -51,13 +51,12 @@ extension MyPageViewModel {
     }
 
     enum Mutation {
-        case setUserInfo(String, String)
+        case setUserInfo(User?)
         case setIsLogout(Bool)
     }
 
     struct State {
-        var name: String = ""
-        var email: String = ""
+        var user: User?
         var isLogout: Bool = false
     }
 }

@@ -46,9 +46,20 @@ private extension MyPageViewController {
         let logoutTapGesture = UITapGestureRecognizer()
         myPageView.logoutView.addGestureRecognizer(logoutTapGesture)
 
+        viewModel.action.accept(.viewDidLoad)
+
         logoutTapGesture.rx.event
             .map { _ in MyPageViewModel.Action.didTapLogout }
             .bind(to: viewModel.action)
+            .disposed(by: disposeBag)
+
+        viewModel.state
+            .compactMap(\.user)
+            .asDriver(onErrorDriveWith: .empty())
+            .drive(with: self) { owner, user in
+                owner.myPageView.userView.nameLabel.text = user.name
+                owner.myPageView.userView.emailLabel.text = user.email
+            }
             .disposed(by: disposeBag)
 
         viewModel.state
