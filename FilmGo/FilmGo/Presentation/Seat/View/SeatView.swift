@@ -12,6 +12,7 @@ import RxCocoa
 
 final class SeatView: UIView {
     let didTapCell = PublishRelay<IndexPath>()
+    let didTapPayButton = PublishRelay<Void>()
 
     private var dataSource: UICollectionViewDiffableDataSource<Section, SeatItem>?
     private let disposeBag = DisposeBag()
@@ -194,6 +195,10 @@ private extension SeatView {
     func setBindings() {
         collectionView.rx.itemSelected
             .bind(to: didTapCell)
+            .disposed(by: disposeBag)
+
+        payButton.rx.tap
+            .bind(to: didTapPayButton)
             .disposed(by: disposeBag)
     }
 }

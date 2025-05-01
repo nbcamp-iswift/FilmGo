@@ -13,10 +13,13 @@ final class SeatViewModel: ViewModelProtocol {
     let state: BehaviorRelay<State>
     let action = PublishRelay<Action>()
 
+    let useCase: OrderUseCase
     let disposeBag = DisposeBag()
 
-    init(movie: Movie) {
+    init(movie: Movie, useCase: OrderUseCase) {
+        self.useCase = useCase
         state = BehaviorRelay(value: State(movie: movie))
+        SupabaseService.shared.startListening(for: movie.movieId)
         bind()
     }
 
@@ -26,6 +29,14 @@ final class SeatViewModel: ViewModelProtocol {
             .just(.startListening)
         case .didTapCell(let seatNumber):
             .just(.selectSeat(seatNumber))
+        case .didTapPayButton:
+            useCase.createOrder(
+                movieID: state.value.movie.movieId,
+                seats: state.value.selectingSeatsByCurrentUser.map(\.seatNumber)
+            )
+            .map { result in
+                .updateFinishCreateOrder(result)
+            }
         }
     }
 
@@ -35,7 +46,6 @@ final class SeatViewModel: ViewModelProtocol {
         // TODO: Domain 및 Data Layer로 책임 분리 필요
         switch mutation {
         case .startListening:
-            SupabaseService.shared.startListening(for: state.movie.movieId)
             SupabaseService.shared.selectedSeats
                 .subscribe(onNext: { [weak self] seats in
                     guard let self else { return }
@@ -54,6 +64,8 @@ final class SeatViewModel: ViewModelProtocol {
                 movieID: state.movie.movieId,
                 seatNumber: seatNumber,
             )
+        case .updateFinishCreateOrder(let result):
+            newState.finishCreateOrder = result
         }
 
         return newState
@@ -68,16 +80,19 @@ extension SeatViewModel {
     enum Action {
         case viewDidLoad
         case didTapCell(Int)
+        case didTapPayButton
     }
 
     enum Mutation {
         case startListening
         case selectSeat(Int)
+        case updateFinishCreateOrder(Bool)
     }
 
     struct State {
         var movie: Movie
         var selectedSeats = [SeatItem]()
         var selectingSeatsByCurrentUser = [SeatItem]()
+        var finishCreateOrder: Bool?
     }
 }

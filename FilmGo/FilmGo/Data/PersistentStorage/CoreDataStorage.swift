@@ -6,6 +6,7 @@ enum CoreDataStorageError: Error {
     case saveError(Error)
     case deleteError(Error)
     case userNotFound
+    case unknownError
 }
 
 final class CoreDataStorage {
@@ -98,7 +99,7 @@ extension CoreDataStorage {
         saveContext()
     }
 
-    func createOrder(movieId: Int, seats: [String], orderedDate: Date = Date()) throws {
+    func createOrder(movieId: Int, seats: [String], orderedDate: Date = Date()) throws -> Bool {
         guard let user = fetchLoggedInUser() else {
             throw CoreDataStorageError.userNotFound
         }
@@ -110,6 +111,8 @@ extension CoreDataStorage {
         order.seats = seats
         order.user = user
         saveContext()
+
+        return true
     }
 
     func fetchOrders(forUser userId: UUID) -> [Order] {

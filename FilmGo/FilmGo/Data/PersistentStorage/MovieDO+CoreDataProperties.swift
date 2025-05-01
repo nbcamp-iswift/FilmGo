@@ -29,7 +29,7 @@ extension MovieDO {
             title: title,
             star: star,
             runningTime: runningTime,
-            releasedYear: 0,
+            releasedYear: Int(releasedYear),
             genres: genre ?? [],
             overview: overview,
             director: director,

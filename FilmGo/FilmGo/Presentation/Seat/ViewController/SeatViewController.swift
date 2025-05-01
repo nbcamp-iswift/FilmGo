@@ -65,10 +65,26 @@ extension SeatViewController {
             }
             .disposed(by: disposeBag)
 
+        viewModel.state
+            .compactMap(\.finishCreateOrder)
+            .asDriver(onErrorDriveWith: .empty())
+            .drive { [weak self] result in
+                guard result else { return }
+                self?.navigationController?.popToRootViewController(animated: true)
+            }
+            .disposed(by: disposeBag)
+
         seatView.didTapCell
             .asDriver(onErrorDriveWith: .empty())
             .drive { [weak self] indexPath in
                 self?.viewModel.action.accept(.didTapCell(indexPath.item))
+            }
+            .disposed(by: disposeBag)
+
+        seatView.didTapPayButton
+            .asDriver(onErrorDriveWith: .empty())
+            .drive { [weak self] _ in
+                self?.viewModel.action.accept(.didTapPayButton)
             }
             .disposed(by: disposeBag)
     }

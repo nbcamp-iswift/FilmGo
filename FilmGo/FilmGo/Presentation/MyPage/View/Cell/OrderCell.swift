@@ -52,6 +52,7 @@ final class OrderCell: UICollectionViewCell {
 
     func update(with order: Order) {
         posterImageView.backgroundColor = .primary300
+        // TODO: posterImageView.setProgressiveImage(by:)로 변경
         titleLabel.text = ""
         dateLabel.text = "2024-01-15 20:00"
         seatsLabel.text = "좌석: D4, D5"
