@@ -67,7 +67,6 @@ private extension OrderViewController {
         orderView.didTapSelectSeatButton
             .asDriver(onErrorDriveWith: .empty())
             .drive { [weak self] _ in
-                // TODO: DIContainer 구현하기 전 임시 push
                 guard let movie = self?.viewModel.state.value.movie else { return }
                 self?.coordinator.showSeatView(movie: movie)
             }
