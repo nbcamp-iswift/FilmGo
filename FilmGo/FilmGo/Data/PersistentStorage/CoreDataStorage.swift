@@ -160,6 +160,10 @@ extension CoreDataStorage {
             existedMovie.runningTime = movie.runningTime
             existedMovie.posterPath = movie.posterImagePath
             existedMovie.genre = movie.genres
+            existedMovie.overview = movie.overview
+            existedMovie.releasedYear = Int64(movie.releasedYear)
+            existedMovie.director = movie.director
+            existedMovie.actors = movie.actors
         } else {
             let newEntity = MovieDO(context: context)
             newEntity.id = Int64(movie.movieId)
@@ -168,6 +172,10 @@ extension CoreDataStorage {
             newEntity.runningTime = movie.runningTime
             newEntity.posterPath = movie.posterImagePath
             newEntity.genre = movie.genres
+            newEntity.overview = movie.overview
+            newEntity.releasedYear = Int64(movie.releasedYear)
+            newEntity.director = movie.director
+            newEntity.actors = movie.actors
         }
         saveContext()
     }

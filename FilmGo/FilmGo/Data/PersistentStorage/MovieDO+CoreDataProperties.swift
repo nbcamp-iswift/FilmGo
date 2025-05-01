@@ -6,13 +6,17 @@ public extension MovieDO {
         NSFetchRequest<MovieDO>(entityName: "MovieDO")
     }
 
-    @NSManaged var id: Int64 // movie-id
-    @NSManaged var title: String
-    @NSManaged var star: String
-    @NSManaged var runningTime: String
-    @NSManaged var posterPath: String
     @NSManaged var genre: [String]?
+    @NSManaged var id: Int64
     @NSManaged var posterImage: Data?
+    @NSManaged var posterPath: String
+    @NSManaged var runningTime: String
+    @NSManaged var star: String
+    @NSManaged var title: String
+    @NSManaged var overview: String
+    @NSManaged var director: String
+    @NSManaged var actors: [String]?
+    @NSManaged var releasedYear: Int64
 }
 
 extension MovieDO: Identifiable {}
@@ -27,9 +31,9 @@ extension MovieDO {
             runningTime: runningTime,
             releasedYear: 0,
             genres: genre ?? [],
-            overview: "",
-            director: "",
-            actors: []
+            overview: overview,
+            director: director,
+            actors: actors ?? []
         )
     }
 }
