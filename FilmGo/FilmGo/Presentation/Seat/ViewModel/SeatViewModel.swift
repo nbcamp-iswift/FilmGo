@@ -21,24 +21,45 @@ final class SeatViewModel: ViewModelProtocol {
     }
 
     func mutate(action: Action) -> Observable<Mutation> {
-        switch action {}
+        switch action {
+        case .viewDidLoad:
+            .just(.startListening)
+        }
     }
 
     func reduce(state: State, mutation: Mutation) -> State {
         var newState = state
 
-        switch mutation {}
+        switch mutation {
+        case .startListening:
+            SupabaseService.shared.startListening(for: state.movie.movieId)
+            SupabaseService.shared.selectedSeats
+                .subscribe(onNext: { [weak self] seats in
+                    guard let self else { return }
+                    self.state.accept(.init(movie: state.movie, selectedSeats: seats))
+                })
+                .disposed(by: disposeBag)
+        }
 
         return newState
+    }
+
+    deinit {
+        SupabaseService.shared.endListening()
     }
 }
 
 extension SeatViewModel {
-    enum Action {}
+    enum Action {
+        case viewDidLoad
+    }
 
-    enum Mutation {}
+    enum Mutation {
+        case startListening
+    }
 
     struct State {
         var movie: Movie
+        var selectedSeats = [Int]()
     }
 }

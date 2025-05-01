@@ -65,6 +65,17 @@ final class SeatView: UIView {
         fatalError()
     }
 
+    func updateSelectedSeats(_ selectedSeats: [Int]) {
+        var newSnapshot = NSDiffableDataSourceSnapshot<Section, SeatItem>()
+        let newItems = (0 ..< 64).map {
+            let state: SeatItem.State = selectedSeats.contains($0) ? .alreadySelected : .selectable
+            return SeatItem(number: $0, state: state)
+        }
+        newSnapshot.appendSections([.main])
+        newSnapshot.appendItems(newItems)
+        dataSource?.apply(newSnapshot)
+    }
+
     private func createLayout() -> UICollectionViewLayout {
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0 / 8.0),

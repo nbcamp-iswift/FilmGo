@@ -45,5 +45,15 @@ extension SeatViewController {
         setBindings()
     }
 
-    func setBindings() {}
+    func setBindings() {
+        viewModel.action.accept(.viewDidLoad)
+
+        viewModel.state
+            .compactMap(\.selectedSeats)
+            .asDriver(onErrorDriveWith: .empty())
+            .drive { [weak self] selectedSeats in
+                self?.seatView.updateSelectedSeats(selectedSeats)
+            }
+            .disposed(by: disposeBag)
+    }
 }
