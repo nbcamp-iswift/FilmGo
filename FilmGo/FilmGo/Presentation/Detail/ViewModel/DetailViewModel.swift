@@ -13,19 +13,19 @@ final class DetailViewModel: ViewModelProtocol {
     let state: BehaviorRelay<State>
     let action = PublishRelay<Action>()
 
-    let fetchMovieUseCase: FetchableMovieUseCase
+    let movieUseCase: MovieUseCaseProtocol
     let disposeBag = DisposeBag()
 
-    init(movieID: Int, fetchMovieUseCase: FetchableMovieUseCase) {
+    init(movieID: Int, movieUseCase: MovieUseCaseProtocol) {
         state = BehaviorRelay(value: State(movieID: movieID))
-        self.fetchMovieUseCase = fetchMovieUseCase
+        self.movieUseCase = movieUseCase
         bind()
     }
 
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .fetchMovie:
-            fetchMovieUseCase.execute(for: state.value.movieID)
+            movieUseCase.execute(for: state.value.movieID)
                 .map { Mutation.setMovie($0) }
         }
     }

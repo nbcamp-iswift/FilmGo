@@ -9,9 +9,9 @@ import Foundation
 import RxSwift
 
 final class MovieUseCase: MovieUseCaseProtocol {
-    let repository: DefaultMovieRepository
+    let repository: MovieRepositoryProtocol
 
-    init(repository: DefaultMovieRepository) {
+    init(repository: MovieRepositoryProtocol) {
         self.repository = repository
     }
 
@@ -21,5 +21,9 @@ final class MovieUseCase: MovieUseCaseProtocol {
 
     func fetchPopular(page: Int) -> Observable<PaginatedMovies> {
         repository.fetchPopularMovies(page: page).asObservable()
+    }
+
+    func execute(for id: Int) -> Observable<Movie> {
+        repository.fetchMovieEntity(id: id).asObservable()
     }
 }
