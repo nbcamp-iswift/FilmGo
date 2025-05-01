@@ -1,49 +1,52 @@
 import Foundation
 import CoreData
 
-public extension User {
-    @nonobjc class func fetchRequest() -> NSFetchRequest<User> {
-        NSFetchRequest<User>(entityName: "User")
+extension User {
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<User> {
+        return NSFetchRequest<User>(entityName: "User")
     }
 
-    @NSManaged var email: String
-    @NSManaged var id: Int64
-    @NSManaged var isLogin: Bool
-    @NSManaged var name: String
-    @NSManaged var password: String
-    @NSManaged var orders: NSOrderedSet?
+    @NSManaged public var id: UUID
+    @NSManaged public var name: String
+    @NSManaged public var email: String
+    @NSManaged public var password: String
+    @NSManaged public var isLogin: Bool
+    @NSManaged public var orders: NSOrderedSet?
 }
 
-public extension User {
-    @objc(insertObject:inOrdersAtIndex:)
-    @NSManaged func insertIntoOrders(_ value: Order, at idx: Int)
+// MARK: Generated accessors for orders
+extension User {
 
-    @objc(removeObjectFromOrdersAtIndex:)
-    @NSManaged func removeFromOrders(at idx: Int)
+    @objc(insertObject:inOrdersAtIndex:)
+    @NSManaged public func insertIntoOrders(_ value: Order, at idx: Int)
+
+    @objc(removeObjectFro/Users/seunghojang/Documents/nbcamps/FilmGo/FilmGo/FilmGo/App/Derived/Info.plistmOrdersAtIndex:)
+    @NSManaged public func removeFromOrders(at idx: Int)
 
     @objc(insertOrders:atIndexes:)
-    @NSManaged func insertIntoOrders(_ values: [Order], at indexes: NSIndexSet)
+    @NSManaged public func insertIntoOrders(_ values: [Order], at indexes: NSIndexSet)
 
     @objc(removeOrdersAtIndexes:)
-    @NSManaged func removeFromOrders(at indexes: NSIndexSet)
+    @NSManaged public func removeFromOrders(at indexes: NSIndexSet)
 
     @objc(replaceObjectInOrdersAtIndex:withObject:)
-    @NSManaged func replaceOrders(at idx: Int, with value: Order)
+    @NSManaged public func replaceOrders(at idx: Int, with value: Order)
 
     @objc(replaceOrdersAtIndexes:withOrders:)
-    @NSManaged func replaceOrders(at indexes: NSIndexSet, with values: [Order])
+    @NSManaged public func replaceOrders(at indexes: NSIndexSet, with values: [Order])
 
     @objc(addOrdersObject:)
-    @NSManaged func addToOrders(_ value: Order)
+    @NSManaged public func addToOrders(_ value: Order)
 
     @objc(removeOrdersObject:)
-    @NSManaged func removeFromOrders(_ value: Order)
+    @NSManaged public func removeFromOrders(_ value: Order)
 
     @objc(addOrders:)
-    @NSManaged func addToOrders(_ values: NSOrderedSet)
+    @NSManaged public func addToOrders(_ values: NSOrderedSet)
 
     @objc(removeOrders:)
-    @NSManaged func removeFromOrders(_ values: NSOrderedSet)
+    @NSManaged public func removeFromOrders(_ values: NSOrderedSet)
+
 }
 
-extension User: Identifiable {}
+extension User : Identifiable {}

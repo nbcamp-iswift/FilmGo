@@ -1,17 +1,17 @@
 import Foundation
 import CoreData
 
-public extension Order {
-    @nonobjc class func fetchRequest() -> NSFetchRequest<Order> {
-        NSFetchRequest<Order>(entityName: "Order")
+
+extension Order {
+    @nonobjc public class func fetchRequest() -> NSFetchRequest<Order> {
+        return NSFetchRequest<Order>(entityName: "Order")
     }
 
-    @NSManaged var id: Int64
-    @NSManaged var movieid: Int64
-    @NSManaged var orderedDate: Date?
-    @NSManaged var seats: NSObject?
-    @NSManaged var userid: Int64
-    @NSManaged var user: User?
+    @NSManaged public var id: UUID
+    @NSManaged public var movieid: Int64
+    @NSManaged public var orderedDate: Date?
+    @NSManaged public var seats: [String]?
+    @NSManaged public var user: User?
 }
 
-extension Order: Identifiable {}
+extension Order : Identifiable {}
