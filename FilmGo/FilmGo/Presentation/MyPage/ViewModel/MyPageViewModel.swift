@@ -10,13 +10,15 @@ import RxSwift
 import RxRelay
 
 final class MyPageViewModel: ViewModelProtocol {
-    let useCase: UserUseCase
+    private let userUseCase: UserUseCase
+    private let movieUseCase: MovieUseCase
     var state: BehaviorRelay<State>
     var action = PublishRelay<Action>()
     var disposeBag = DisposeBag()
 
-    init(useCase: UserUseCase) {
-        self.useCase = useCase
+    init(userUseCase: UserUseCase, movieUseCase: MovieUseCase) {
+        self.userUseCase = userUseCase
+        self.movieUseCase = movieUseCase
         state = BehaviorRelay(value: State())
         bind()
     }
@@ -24,15 +26,15 @@ final class MyPageViewModel: ViewModelProtocol {
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .viewDidLoad:
-            let user = useCase.getUser()
+            let user = userUseCase.getUser()
+            return .just(.setUserInfo(user))
+        case .viewWillAppear:
+            let user = userUseCase.getUser()
             let orders = (user?.orders as? NSOrderedSet)?
                 .compactMap { $0 as? Order } ?? []
-            return .concat([
-                .just(.setUserInfo(user)),
-                .just(.setOrders(orders)),
-            ])
+            return setOrders(from: orders)
         case .didTapLogout:
-            useCase.logout()
+            userUseCase.logout()
             return .just(.setIsLogout(true))
         }
     }
@@ -51,21 +53,43 @@ final class MyPageViewModel: ViewModelProtocol {
     }
 }
 
+private extension MyPageViewModel {
+    func setOrders(from orders: [Order]) -> Observable<Mutation> {
+        Observable.from(orders)
+            .flatMap { [weak self] order -> Observable<OrderCellModel> in
+                guard let self else { return .empty() }
+                return movieUseCase.execute(for: Int(order.movieid))
+                    .map { movie in
+                        let seatsString = order.seats.joined(separator: " ")
+                        return OrderCellModel(
+                            movieTitle: movie.title,
+                            date: order.orderedDate,
+                            seats: seatsString
+                        )
+                    }
+            }
+            .toArray()
+            .asObservable()
+            .map { .setOrders($0) }
+    }
+}
+
 extension MyPageViewModel {
     enum Action {
         case viewDidLoad
+        case viewWillAppear
         case didTapLogout
     }
 
     enum Mutation {
         case setUserInfo(User?)
-        case setOrders([Order])
+        case setOrders([OrderCellModel])
         case setIsLogout(Bool)
     }
 
     struct State {
         var user: User?
-        var orders: [Order] = []
+        var orders: [OrderCellModel] = []
         var isLogout: Bool = false
     }
 }

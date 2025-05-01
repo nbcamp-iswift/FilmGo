@@ -35,6 +35,11 @@ final class MyPageViewController: UIViewController {
         super.viewDidLoad()
         configure()
     }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.action.accept(.viewWillAppear)
+    }
 }
 
 private extension MyPageViewController {
