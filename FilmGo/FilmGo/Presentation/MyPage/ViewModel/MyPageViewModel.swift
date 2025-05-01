@@ -25,7 +25,12 @@ final class MyPageViewModel: ViewModelProtocol {
         switch action {
         case .viewDidLoad:
             let user = useCase.getUser()
-            return .just(.setUserInfo(user))
+            let orders = (user?.orders as? NSOrderedSet)?
+                .compactMap { $0 as? Order } ?? []
+            return .concat([
+                .just(.setUserInfo(user)),
+                .just(.setOrders(orders)),
+            ])
         case .didTapLogout:
             useCase.logout()
             return .just(.setIsLogout(true))
