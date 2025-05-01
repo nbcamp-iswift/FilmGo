@@ -76,6 +76,11 @@ final class OrderView: UIView {
         }
     }
 
+    func updateLayout(with movie: Movie) {
+        posterImageView.image = UIImage(data: movie.posterImage)
+        titleLabel.text = movie.title
+    }
+
     func updateSelectedDate(at index: Int) {
         guard var snapshot = dataSource?.snapshot() else { return }
         let oldItems = snapshot.itemIdentifiers(inSection: .date)

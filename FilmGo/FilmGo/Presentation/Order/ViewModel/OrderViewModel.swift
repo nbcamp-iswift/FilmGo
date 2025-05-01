@@ -15,8 +15,8 @@ final class OrderViewModel: ViewModelProtocol {
 
     let disposeBag = DisposeBag()
 
-    init() {
-        state = BehaviorRelay(value: State())
+    init(movie: Movie) {
+        state = BehaviorRelay(value: State(movie: movie))
         bind()
     }
 
@@ -58,6 +58,7 @@ extension OrderViewModel {
     }
 
     struct State {
+        var movie: Movie
         var selectedDateIndex: Int?
         var selectedTimeIndex: Int?
         var selectSeatButtonIsEnabled: Bool = false

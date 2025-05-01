@@ -55,7 +55,9 @@ extension DetailViewController {
             .asDriver(onErrorDriveWith: .empty())
             .drive { [weak self] _ in
                 // TODO: DIContainer 구현하기 전 임시 push
-                let vc = OrderViewController()
+                guard let movie = self?.viewModel.state.value.movie else { return }
+                let vm = OrderViewModel(movie: movie)
+                let vc = OrderViewController(viewModel: vm)
                 self?.navigationController?.pushViewController(vc, animated: true)
             }
             .disposed(by: disposeBag)

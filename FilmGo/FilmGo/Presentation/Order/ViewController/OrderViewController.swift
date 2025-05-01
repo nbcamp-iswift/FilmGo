@@ -11,10 +11,20 @@ import RxSwift
 import RxRelay
 
 final class OrderViewController: UIViewController {
+    private let viewModel: OrderViewModel
+    private let disposeBag = DisposeBag()
+
     private let orderView = OrderView()
 
-    private let viewModel = OrderViewModel()
-    private let disposeBag = DisposeBag()
+    init(viewModel: OrderViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError()
+    }
 
     override func loadView() {
         view = orderView
@@ -43,6 +53,14 @@ private extension OrderViewController {
                 default:
                     break
                 }
+            }
+            .disposed(by: disposeBag)
+
+        viewModel.state
+            .compactMap(\.movie)
+            .asDriver(onErrorDriveWith: .empty())
+            .drive { [weak self] movie in
+                self?.orderView.updateLayout(with: movie)
             }
             .disposed(by: disposeBag)
 
