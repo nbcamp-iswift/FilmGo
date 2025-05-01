@@ -12,12 +12,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         let window = UIWindow(windowScene: windowScene)
 
-        let repo = DefaultUserRepository(storage: CoreDataStorage())
-        let useCase = UserUseCase(repository: repo)
-        let viewModel = LoginViewModel(useCase: useCase)
-        let navigationController = UINavigationController(
-            rootViewController: LoginViewController(viewModel: viewModel)
+        let navigationController = UINavigationController()
+        navigationController.isNavigationBarHidden = true
+
+        let tabBarCoordinator = TabBarCoordinator(
+            navigationController: navigationController,
+            diContainer: DIContainer()
         )
+
+        tabBarCoordinator.start()
+
         window.rootViewController = navigationController
         window.makeKeyAndVisible()
         self.window = window
