@@ -64,6 +64,7 @@ final class MyPageView: UIView {
 
     func updateSnapshot(with items: [Order]) {
         var snapshot = NSDiffableDataSourceSnapshot<MyPageSection, Order>()
+        snapshot.appendSections([.orders])
         snapshot.appendItems(items)
         dataSource?.apply(snapshot)
     }
