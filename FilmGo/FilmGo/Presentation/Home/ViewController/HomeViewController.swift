@@ -20,6 +20,7 @@ enum MovieSectionItem: Hashable {
 }
 
 final class HomeViewController: UIViewController {
+    private var coordinator: HomeCoordinator
     private let viewModel: HomeViewModel
     private let homeView = HomeView()
     private let disposeBag = DisposeBag()
@@ -43,8 +44,9 @@ final class HomeViewController: UIViewController {
         navigationController?.applyFGNavigationBarStyle(.large(title: "FilmGo"))
     }
 
-    init(viewModel: HomeViewModel) {
+    init(viewModel: HomeViewModel, coordinator: HomeCoordinator) {
         self.viewModel = viewModel
+        self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -158,25 +160,12 @@ private extension HomeViewController {
                 guard let self else { return }
                 guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
 
-                var movieId: Int
                 switch item {
                 case .nowPlaying(let movie):
-                    movieId = movie.movieId
+                    coordinator.showDetailView(movie: movie)
                 case .popular(let movie):
-                    movieId = movie.movieId
+                    coordinator.showDetailView(movie: movie)
                 }
-                let detailVC = DetailViewController(
-                    viewModel: DetailViewModel(
-                        movieID: movieId,
-                        fetchMovieUseCase:
-                        FetchMovieUseCase(repository:
-                            DefaultMovieRepository(
-                                networkService: DefaultNetworkService()
-                            )
-                        )
-                    )
-                )
-                navigationController?.pushViewController(detailVC, animated: true)
             })
             .disposed(by: disposeBag)
     }

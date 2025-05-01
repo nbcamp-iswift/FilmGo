@@ -10,13 +10,15 @@ import RxSwift
 import RxCocoa
 
 final class DetailViewController: UIViewController {
+    private var coordinator: HomeCoordinator
     private let viewModel: DetailViewModel
     private let disposeBag = DisposeBag()
 
     private let detailView = DetailView()
 
-    init(viewModel: DetailViewModel) {
+    init(viewModel: DetailViewModel, coordinator: HomeCoordinator) {
         self.viewModel = viewModel
+        self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -47,8 +49,6 @@ extension DetailViewController {
     }
 
     func setBindings() {
-        viewModel.action.accept(.fetchMovie)
-
         viewModel.state
             .compactMap(\.movie)
             .asDriver(onErrorDriveWith: .empty())
@@ -62,9 +62,7 @@ extension DetailViewController {
             .drive { [weak self] _ in
                 // TODO: DIContainer 구현하기 전 임시 push
                 guard let movie = self?.viewModel.state.value.movie else { return }
-                let vm = OrderViewModel(movie: movie)
-                let vc = OrderViewController(viewModel: vm)
-                self?.navigationController?.pushViewController(vc, animated: true)
+                self?.coordinator.showOrderView(movie: movie)
             }
             .disposed(by: disposeBag)
     }

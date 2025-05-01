@@ -11,13 +11,15 @@ import RxSwift
 import RxRelay
 
 final class OrderViewController: UIViewController {
+    private var coordinator: HomeCoordinator
     private let viewModel: OrderViewModel
     private let disposeBag = DisposeBag()
 
     private let orderView = OrderView()
 
-    init(viewModel: OrderViewModel) {
+    init(viewModel: OrderViewModel, coordinator: HomeCoordinator) {
         self.viewModel = viewModel
+        self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -66,9 +68,7 @@ private extension OrderViewController {
             .drive { [weak self] _ in
                 // TODO: DIContainer 구현하기 전 임시 push
                 guard let movie = self?.viewModel.state.value.movie else { return }
-                let vm = SeatViewModel(movie: movie)
-                let vc = SeatViewController(viewModel: vm)
-                self?.navigationController?.pushViewController(vc, animated: true)
+                self?.coordinator.showSeatView(movie: movie)
             }
             .disposed(by: disposeBag)
 
