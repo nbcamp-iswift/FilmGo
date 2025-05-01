@@ -38,6 +38,11 @@ final class HomeViewController: UIViewController {
         configure()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.applyFGNavigationBarStyle(.large(title: "FilmGo"))
+    }
+
     init(viewModel: HomeViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -80,18 +85,6 @@ private extension HomeViewController {
 
     func setAttributes() {
         view.backgroundColor = .baseBlack
-        title = "FilmGo"
-        navigationController?.navigationBar.prefersLargeTitles = true
-
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithTransparentBackground()
-        appearance.backgroundColor = .clear
-
-        appearance.titleTextAttributes = [.foregroundColor: UIColor.baseWhite]
-        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.baseWhite]
-
-        navigationController?.navigationBar.standardAppearance = appearance
-        navigationController?.navigationBar.scrollEdgeAppearance = appearance
     }
 
     func setDataSource() {

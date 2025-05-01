@@ -12,6 +12,7 @@ import RxCocoa
 
 final class OrderView: UIView {
     let didTapCell = PublishRelay<IndexPath>()
+    let didTapSelectSeatButton = PublishRelay<Void>()
 
     private var dataSource: UICollectionViewDiffableDataSource<OrderSection, DateTimeItem>?
     private let disposeBag = DisposeBag()
@@ -74,6 +75,11 @@ final class OrderView: UIView {
         UICollectionViewCompositionalLayout { sectionIndex, _ ->
             NSCollectionLayoutSection in OrderSection(sectionIndex).layoutSection
         }
+    }
+
+    func updateLayout(with movie: Movie) {
+        posterImageView.image = UIImage(data: movie.posterImage)
+        titleLabel.text = movie.title
     }
 
     func updateSelectedDate(at index: Int) {
@@ -216,6 +222,10 @@ private extension OrderView {
     func setBindings() {
         collectionView.rx.itemSelected
             .bind(to: didTapCell)
+            .disposed(by: disposeBag)
+
+        selectSeatButton.rx.tap
+            .bind(to: didTapSelectSeatButton)
             .disposed(by: disposeBag)
     }
 }

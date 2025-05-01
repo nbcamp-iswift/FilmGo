@@ -33,6 +33,12 @@ final class DetailViewController: UIViewController {
         super.viewDidLoad()
         configure()
     }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.applyFGNavigationBarStyle(.clear)
+        navigationItem.backButtonTitle = nil
+    }
 }
 
 extension DetailViewController {
@@ -48,6 +54,17 @@ extension DetailViewController {
             .asDriver(onErrorDriveWith: .empty())
             .drive { [weak self] in
                 self?.detailView.update(with: $0)
+            }
+            .disposed(by: disposeBag)
+
+        detailView.didTapbookButton
+            .asDriver(onErrorDriveWith: .empty())
+            .drive { [weak self] _ in
+                // TODO: DIContainer 구현하기 전 임시 push
+                guard let movie = self?.viewModel.state.value.movie else { return }
+                let vm = OrderViewModel(movie: movie)
+                let vc = OrderViewController(viewModel: vm)
+                self?.navigationController?.pushViewController(vc, animated: true)
             }
             .disposed(by: disposeBag)
     }

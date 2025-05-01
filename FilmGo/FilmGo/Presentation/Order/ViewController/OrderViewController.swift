@@ -11,10 +11,20 @@ import RxSwift
 import RxRelay
 
 final class OrderViewController: UIViewController {
+    private let viewModel: OrderViewModel
+    private let disposeBag = DisposeBag()
+
     private let orderView = OrderView()
 
-    private let viewModel = OrderViewModel()
-    private let disposeBag = DisposeBag()
+    init(viewModel: OrderViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError()
+    }
 
     override func loadView() {
         view = orderView
@@ -23,6 +33,11 @@ final class OrderViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configure()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.applyFGNavigationBarStyle(.dark(title: "예매하기"))
     }
 }
 
@@ -43,6 +58,25 @@ private extension OrderViewController {
                 default:
                     break
                 }
+            }
+            .disposed(by: disposeBag)
+
+        orderView.didTapSelectSeatButton
+            .asDriver(onErrorDriveWith: .empty())
+            .drive { [weak self] _ in
+                // TODO: DIContainer 구현하기 전 임시 push
+                guard let movie = self?.viewModel.state.value.movie else { return }
+                let vm = SeatViewModel(movie: movie)
+                let vc = SeatViewController(viewModel: vm)
+                self?.navigationController?.pushViewController(vc, animated: true)
+            }
+            .disposed(by: disposeBag)
+
+        viewModel.state
+            .compactMap(\.movie)
+            .asDriver(onErrorDriveWith: .empty())
+            .drive { [weak self] movie in
+                self?.orderView.updateLayout(with: movie)
             }
             .disposed(by: disposeBag)
 
