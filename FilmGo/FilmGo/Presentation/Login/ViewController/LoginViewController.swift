@@ -87,7 +87,7 @@ private extension LoginViewController {
             .drive(with: self) { owner, _ in
                 let storage = CoreDataStorage()
                 let userRepository = DefaultUserRepository(storage: storage)
-                let signUpUseCae = SignUpUseCase(repository: userRepository)
+                let signUpUseCae = UserUseCase(repository: userRepository)
                 let signUpViewModel = SignUpViewModel(signUpUseCase: signUpUseCae)
                 let signUpViewController = SignUpViewController(viewModel: signUpViewModel)
                 owner.navigationController?.pushViewController(

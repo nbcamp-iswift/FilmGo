@@ -43,7 +43,7 @@ final class CoreDataStorage {
 }
 
 extension CoreDataStorage {
-    func loginUser(email: String, password:String) -> Bool {
+    func loginUser(email: String, password: String) -> Bool {
         guard let user = fetchUser(byEmail: email), user.password == password else {
             return false
         }
@@ -132,7 +132,7 @@ extension CoreDataStorage {
         }
     }
 
-    private func updateOrder(orderId: UUID, updateBlock: (Order)->Void) throws {
+    private func updateOrder(orderId: UUID, updateBlock: (Order) -> Void) throws {
         let request: NSFetchRequest<Order> = Order.fetchRequest()
         request.predicate = NSPredicate(format: "id == %@", orderId as CVarArg)
         request.fetchLimit = 1

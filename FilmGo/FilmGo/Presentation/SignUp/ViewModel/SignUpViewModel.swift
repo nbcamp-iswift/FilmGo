@@ -10,12 +10,12 @@ import RxSwift
 import RxCocoa
 
 final class SignUpViewModel: ViewModelProtocol {
-    let signUpUseCase: SignUpUseCase
+    let signUpUseCase: UserUseCase
     let state: BehaviorRelay<State>
     let action = PublishRelay<Action>()
     var disposeBag = DisposeBag()
 
-    init(signUpUseCase: SignUpUseCase) {
+    init(signUpUseCase: UserUseCase) {
         self.signUpUseCase = signUpUseCase
         state = BehaviorRelay(value: State())
         bind()

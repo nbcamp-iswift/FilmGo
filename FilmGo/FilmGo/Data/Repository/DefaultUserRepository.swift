@@ -16,7 +16,7 @@ final class DefaultUserRepository: UserRepositoryProtocol {
     }
 
     func login(email: String, password: String) -> Bool {
-        return storage.loginUser(email: email, password: password)
+        storage.loginUser(email: email, password: password)
     }
 
     func logoutCurrentUser() {

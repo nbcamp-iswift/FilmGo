@@ -10,13 +10,13 @@ import RxSwift
 import RxRelay
 
 final class LoginViewModel: ViewModelProtocol {
-    let loginUseCase: LoginUseCase
+    let useCase: UserUseCase
     let state: BehaviorRelay<State>
     let action = PublishRelay<Action>()
     var disposeBag = DisposeBag()
 
-    init(loginUseCase: LoginUseCase) {
-        self.loginUseCase = loginUseCase
+    init(useCase: UserUseCase) {
+        self.useCase = useCase
         state = BehaviorRelay(value: State())
         bind()
     }
@@ -67,7 +67,7 @@ extension LoginViewModel {
 
     func isLoginSuccess() -> Bool {
         let current = state.value
-        return loginUseCase.login(email: current.email, password: current.password)
+        return useCase.login(email: current.email, password: current.password)
     }
 }
 

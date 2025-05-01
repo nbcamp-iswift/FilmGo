@@ -10,20 +10,23 @@ import RxSwift
 import RxRelay
 
 final class MyPageViewModel: ViewModelProtocol {
-    let logoutUseCase: LogoutUseCase
+    let useCase: UserUseCase
     var state: BehaviorRelay<State>
     var action = PublishRelay<Action>()
     var disposeBag = DisposeBag()
 
-    init(logoutUseCase: LogoutUseCase) {
-        self.logoutUseCase = logoutUseCase
+    init(useCase: UserUseCase) {
+        self.useCase = useCase
         state = BehaviorRelay(value: State())
         bind()
     }
 
-    func mutate(action: Action) -> RxSwift.Observable<Mutation> {
+    func mutate(action: Action) -> Observable<Mutation> {
         switch action {
+        case .viewDidLoad:
+            return .empty()
         case .didTapLogout:
+            useCase.logout()
             return .just(.setIsLogout(true))
         }
     }
@@ -31,6 +34,9 @@ final class MyPageViewModel: ViewModelProtocol {
     func reduce(state: State, mutation: Mutation) -> State {
         var newState = state
         switch mutation {
+        case .setUserInfo(let name, let email):
+            newState.name = name
+            newState.email = email
         case .setIsLogout(let isLogout):
             newState.isLogout = isLogout
         }
@@ -40,14 +46,18 @@ final class MyPageViewModel: ViewModelProtocol {
 
 extension MyPageViewModel {
     enum Action {
+        case viewDidLoad
         case didTapLogout
     }
 
     enum Mutation {
+        case setUserInfo(String, String)
         case setIsLogout(Bool)
     }
 
     struct State {
+        var name: String = ""
+        var email: String = ""
         var isLogout: Bool = false
     }
 }
