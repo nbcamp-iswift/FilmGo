@@ -77,13 +77,13 @@ private extension SearchViewController {
                     withReuseIdentifier: MovieVerticalCollectionViewCell.reuseIdentifier,
                     for: indexPath
                 ) as? MovieVerticalCollectionViewCell else { return UICollectionViewCell() }
-                cell.update(
-                    posterImage: item.posterImage,
-                    title: item.title,
-                    genre: item.genres.joined(separator: ", "),
-                    star: item.star,
-                    runtime: item.runningTime
-                )
+//                cell.update(
+//                    posterImage: item.posterImage,
+//                    title: item.title,
+//                    genre: item.genres.joined(separator: ", "),
+//                    star: item.star,
+//                    runtime: item.runningTime
+//                )
                 return cell
             }
         )

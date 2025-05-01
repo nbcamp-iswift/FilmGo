@@ -63,8 +63,14 @@ final class MovieVerticalCollectionViewCell: UICollectionViewCell {
         fatalError()
     }
 
-    func update(posterImagePath: String, title: String, genre: String, star: String, runtime: String) {
-        // imageView.image = UIImage(data: posterImage)
+    func update(
+        posterImagePath: String,
+        title: String,
+        genre: String,
+        star: String,
+        runtime: String
+    ) {
+        imageView.setProgressiveImage(by: posterImagePath)
         titleLabel.text = title
         genreLabel.text = genre
         infoStackView.update(runtime: runtime, star: star)

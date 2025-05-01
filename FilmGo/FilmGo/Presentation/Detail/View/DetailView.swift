@@ -99,7 +99,7 @@ final class DetailView: UIView {
     }
 
     func update(with movie: Movie) {
-        // posterImageView.image = UIImage(data: movie.posterImage)
+        posterImageView.setProgressiveImage(by: movie.posterImagePath)
         titleLabel.text = movie.title
         infoStackView.update(
             runtime: movie.runningTime,

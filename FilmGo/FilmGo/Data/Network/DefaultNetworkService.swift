@@ -53,6 +53,19 @@ final class DefaultNetworkService: NetworkServiceProtocol {
         return downloadImage(from: url)
     }
 
+    func downloadImage(path: String, size: TMDBPosterSize = .w500) async -> Data? {
+        let base = BundleConfig.get(.imageBaseURL)
+        let urlString = base + "/\(size.rawValue)" + path
+        guard let url = URL(string: urlString) else { return nil }
+
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            return data
+        } catch {
+            return nil
+        }
+    }
+
     func request<T: Decodable>(
         type: NetworkServiceType,
         queryParameters: (some Encodable)?
