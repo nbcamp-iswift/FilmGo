@@ -116,6 +116,35 @@ extension CoreDataStorage {
         return order
     }
 
+    func addSeat(orderId: UUID, seat: String) throws {
+        try updateOrder(orderId: orderId) { order in
+            var updated = order.seats ?? []
+            updated.append(seat)
+            order.seats = Array(Set(updated))
+        }
+    }
+
+    func addSeats(orderId: UUID, seats: [String]) throws {
+        try updateOrder(orderId: orderId) { order in
+            var updated = order.seats ?? []
+            updated.append(contentsOf: seats)
+            order.seats = Array(Set(updated))
+        }
+    }
+
+    private func updateOrder(orderId: UUID, updateBlock: (Order)->Void) throws {
+        let request: NSFetchRequest<Order> = Order.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", orderId as CVarArg)
+        request.fetchLimit = 1
+
+        guard let order = try context.fetch(request).first else {
+            throw CoreDataStorageError.userNotFound
+        }
+
+        updateBlock(order)
+        saveContext()
+    }
+
     func clearAllData() {
         let entityNames = ["User", "Order"]
         for entityName in entityNames {
