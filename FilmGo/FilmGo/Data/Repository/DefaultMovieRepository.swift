@@ -3,9 +3,13 @@ import RxSwift
 
 final class DefaultMovieRepository: MovieRepositoryProtocol {
     private let networkService: NetworkServiceProtocol
+    private let imageCacheService: ImageCacheService
 
-    init(networkService: NetworkServiceProtocol) {
+    init(networkService: NetworkServiceProtocol,
+         imageCacheService: ImageCacheService = .shared
+    ) {
         self.networkService = networkService
+        self.imageCacheService = imageCacheService
     }
 
     func fetchMovieEntity(id: Int) -> Single<Movie> {
