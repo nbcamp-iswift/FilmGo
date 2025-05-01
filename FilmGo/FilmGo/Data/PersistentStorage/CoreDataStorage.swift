@@ -42,6 +42,7 @@ final class CoreDataStorage {
     }
 }
 
+// MARK: - User & Order
 extension CoreDataStorage {
     func loginUser(email: String, password: String) -> Bool {
         guard let user = fetchUser(byEmail: email), user.password == password else {
@@ -144,9 +145,68 @@ extension CoreDataStorage {
         updateBlock(order)
         saveContext()
     }
+}
 
+// MARK: - MovieDO
+extension CoreDataStorage {
+    func saveMovie(_ movie: Movie) {
+        if let existedMovie = fetchMovieEntity(movieId: movie.movieId) {
+            existedMovie.title = movie.title
+            existedMovie.star = movie.star
+            existedMovie.runningTime = movie.runningTime
+            existedMovie.posterPath = movie.posterImagePath
+            existedMovie.genre = movie.genres
+        } else {
+            let newEntity = MovieDO(context: context)
+            newEntity.id = Int64(movie.movieId)
+            newEntity.title = movie.title
+            newEntity.star = movie.star
+            newEntity.runningTime = movie.runningTime
+            newEntity.posterPath = movie.posterImagePath
+            newEntity.genre = movie.genres
+        }
+        saveContext()
+    }
+
+    func saveMovies(_ movies: [Movie]) {
+        for movie in movies {
+            saveMovie(movie)
+        }
+    }
+
+    func saveMovieImage(id: Int, imageData: Data) {
+        guard let movie = fetchMovieEntity(movieId: id) else {
+            return
+        }
+        movie.posterImage = imageData
+        saveContext()
+    }
+
+    func searchMovie(movieTitle: String) -> [Movie] {
+        let request: NSFetchRequest<MovieDO> = MovieDO.fetchRequest()
+        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", movieTitle)
+
+        do {
+            return try context.fetch(request)
+                .map { $0.toDomain() }
+        } catch {
+            return []
+        }
+    }
+
+    func fetchMovieEntity(movieId: Int) -> MovieDO? {
+        let request: NSFetchRequest<MovieDO> = MovieDO.fetchRequest()
+        request.predicate = NSPredicate(format: "id==%d", movieId)
+        request.fetchLimit = 1
+        return try? context.fetch(request).first
+    }
+}
+
+// MARK: - Common
+
+extension CoreDataStorage {
     func clearAllData() {
-        let entityNames = ["User", "Order"]
+        let entityNames = ["User", "Order", "MovieDO"]
         for entityName in entityNames {
             let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(
                 entityName: entityName
@@ -157,10 +217,10 @@ extension CoreDataStorage {
                     deleteRequest, with: context
                 )
             } catch {
-                print("Error deleting \(entityName): \(error)")
+                #if DEBUG
+                    print("Error deleting \(entityName): \(error)")
+                #endif
             }
         }
-
-        saveContext()
     }
 }
