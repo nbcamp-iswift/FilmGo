@@ -13,7 +13,7 @@ final class MyPageView: UIView {
 
     private let contentView = UIView()
 
-    private let userView = UserView()
+    let userView = UserView()
 
     private lazy var orderCollectionView: UICollectionView = {
         let collectionView = UICollectionView(

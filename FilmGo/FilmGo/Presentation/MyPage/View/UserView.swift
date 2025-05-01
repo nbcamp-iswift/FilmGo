@@ -23,14 +23,14 @@ final class UserView: UIView {
         return stackView
     }()
 
-    private let nameLabel: UILabel = {
+    let nameLabel: UILabel = {
         let label = UILabel()
         label.textColor = .baseWhite
         label.font = .boldSystemFont(ofSize: 17)
         return label
     }()
 
-    private let emailLabel: UILabel = {
+    let emailLabel: UILabel = {
         let label = UILabel()
         label.textColor = .neutrals200
         label.font = .systemFont(ofSize: 13.6)

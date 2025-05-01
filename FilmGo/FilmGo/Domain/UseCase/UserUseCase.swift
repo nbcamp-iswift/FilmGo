@@ -18,6 +18,10 @@ final class UserUseCase {
         repository.registerUser(email: email, name: name, password: password)
     }
 
+    func getUser() -> User? {
+        repository.getCurrentUser()
+    }
+
     func login(email: String, password: String) -> Bool {
         repository.login(email: email, password: password)
     }
