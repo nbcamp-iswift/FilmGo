@@ -12,6 +12,7 @@ import RxRelay
 
 final class OrderViewController: UIViewController {
     private var coordinator: HomeCoordinator
+
     private let viewModel: OrderViewModel
     private let disposeBag = DisposeBag()
 
@@ -69,6 +70,14 @@ private extension OrderViewController {
                 // TODO: DIContainer 구현하기 전 임시 push
                 guard let movie = self?.viewModel.state.value.movie else { return }
                 self?.coordinator.showSeatView(movie: movie)
+            }
+            .disposed(by: disposeBag)
+
+        viewModel.state
+            .compactMap(\.movie)
+            .asDriver(onErrorDriveWith: .empty())
+            .drive { [weak self] movie in
+                self?.orderView.updateLayout(with: movie)
             }
             .disposed(by: disposeBag)
 
