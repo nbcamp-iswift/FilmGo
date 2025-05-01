@@ -20,6 +20,10 @@ final class SupabaseService {
 
     private let diseposeBag = DisposeBag()
 
+    private var currentUserID: String {
+        CoreDataStorage.shared.fetchLoggedInUser()?.id.uuidString ?? ""
+    }
+
     private init() {
         if let url = URL(string: BundleConfig.get(.supabaseURL)) {
             let key = BundleConfig.get(.supabaseKey)
@@ -94,7 +98,8 @@ final class SupabaseService {
                 .execute()
                 .value
             let seatItems = response.map {
-                guard let state = SeatItem.State(rawValue: $0.state) else { fatalError() }
+                guard var state = SeatItem.State(rawValue: $0.state) else { fatalError() }
+                if $0.userID != currentUserID { state = .alreadySelected }
                 return SeatItem(seatNumber: $0.seatNumber, userID: $0.userID, state: state)
             }
             selectedSeats.accept(seatItems)
@@ -103,10 +108,11 @@ final class SupabaseService {
 
     private func insertSelectedSeat(movieID: Int, seatNumber: Int) {
         guard let client else { return }
+
         let requestDTO = SelectedSeatRequestDTO(
             movieID: movieID,
             seatNumber: seatNumber,
-            userID: CoreDataStorage.shared.fetchLoggedInUser()?.id.uuidString ?? "",
+            userID: currentUserID,
             state: SeatItem.State.selecting.rawValue
         )
 

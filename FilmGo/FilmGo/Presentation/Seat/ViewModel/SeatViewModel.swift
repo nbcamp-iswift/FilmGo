@@ -32,6 +32,7 @@ final class SeatViewModel: ViewModelProtocol {
     func reduce(state: State, mutation: Mutation) -> State {
         var newState = state
 
+        // TODO: Domain Layer로 책임 분리 필요
         switch mutation {
         case .startListening:
             SupabaseService.shared.startListening(for: state.movie.movieId)
