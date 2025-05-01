@@ -1,10 +1,3 @@
-//
-//  DefaultUserRepository.swift
-//  FilmGo
-//
-//  Created by 곽다은 on 5/1/25.
-//
-
 import Foundation
 
 final class DefaultUserRepository: UserRepositoryProtocol {
@@ -16,7 +9,6 @@ final class DefaultUserRepository: UserRepositoryProtocol {
 
     func registerUser(email: String, name: String, password: String) {
         storage.createUser(
-            id: 1,
             name: name,
             email: email,
             password: password
@@ -24,12 +16,13 @@ final class DefaultUserRepository: UserRepositoryProtocol {
     }
 
     func login(email: String, password: String) -> Bool {
-        // TODO: fetchUser로 유저 불러와서 password 매칭, loginUser로 로그인 처리 후 true 반환
-        // TODO: 매칭 실패 시 false 반환
-        true
+        return storage.loginUser(email: email, password: password)
     }
 
-    func logout(userId: Int) {
-        storage.logoutUser(userId: userId)
+    func logoutCurrentUser() {
+        /// Assumption: Only one user(loggedIn.True) can logout
+        /// Logic:      Fetch Loggedin User, if not just return
+        guard let user = storage.fetchLoggedInUser() else { return }
+        storage.logoutUser(userId: user.id)
     }
 }

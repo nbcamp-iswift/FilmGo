@@ -8,7 +8,6 @@ enum CoreDataStorageError: Error {
     case userNotFound
 }
 
-// TODO: Define Protocol
 final class CoreDataStorage {
     static let shared = CoreDataStorage()
     private let scheduler = ConcurrentDispatchQueueScheduler(qos: .userInitiated)
@@ -44,21 +43,31 @@ final class CoreDataStorage {
 }
 
 extension CoreDataStorage {
-    func loginUser(userId: Int) {
-        guard let user = fetchUser(by: Int64(userId)) else { return }
+    func loginUser(email: String, password:String) -> Bool {
+        guard let user = fetchUser(byEmail: email), user.password == password else {
+            return false
+        }
         user.isLogin = true
         saveContext()
+        return true
     }
 
-    func logoutUser(userId: Int) {
-        guard let user = fetchUser(by: Int64(userId)) else { return }
+    func logoutUser(userId: UUID) {
+        guard let user = fetchUser(byId: userId) else { return }
         user.isLogin = false
         saveContext()
     }
 
-    func fetchUser(by id: Int64) -> User? {
+    func fetchUser(byId id: UUID) -> User? {
         let request: NSFetchRequest<User> = User.fetchRequest()
-        request.predicate = NSPredicate(format: "id == %ld", id)
+        request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+        request.fetchLimit = 1
+        return try? context.fetch(request).first
+    }
+
+    func fetchUser(byEmail email: String) -> User? {
+        let request: NSFetchRequest<User> = User.fetchRequest()
+        request.predicate = NSPredicate(format: "email == %@", email)
         request.fetchLimit = 1
         return try? context.fetch(request).first
     }
@@ -71,14 +80,13 @@ extension CoreDataStorage {
     }
 
     func createUser(
-        id: Int,
         name: String,
         email: String,
         password: String,
         isLogin: Bool = false
     ) {
         let newUser = User(context: context)
-        newUser.id = Int64(id)
+        newUser.id = UUID()
         newUser.name = name
         newUser.email = email
         newUser.password = password
@@ -86,24 +94,22 @@ extension CoreDataStorage {
         saveContext()
     }
 
-    func createOrder(id: Int, movieID: Int, orderedDate: Date, seats: [String]) throws {
+    func createOrder(movieId: Int, seats: [String], orderedDate: Date = Date()) throws {
         guard let user = fetchLoggedInUser() else {
             throw CoreDataStorageError.userNotFound
         }
 
-        let newOrder = Order(context: context)
-        newOrder.id = Int64(id)
-        newOrder.movieid = Int64(movieID)
-        newOrder.orderedDate = orderedDate
-        newOrder.seats = seats as NSArray
-        newOrder.userid = user.id
-        newOrder.user = user
-        user.addToOrders(newOrder)
+        let order = Order(context: context)
+        order.id = UUID()
+        order.movieid = Int64(movieId)
+        order.orderedDate = orderedDate
+        order.seats = seats
+        order.user = user
         saveContext()
     }
 
-    func fetchOrders(for userId: Int64) -> [Order] {
-        guard let user = fetchUser(by: userId),
+    func fetchOrders(forUser userId: UUID) -> [Order] {
+        guard let user = fetchUser(byId: userId),
               let order = user.orders?.array as? [Order] else {
             return []
         }
