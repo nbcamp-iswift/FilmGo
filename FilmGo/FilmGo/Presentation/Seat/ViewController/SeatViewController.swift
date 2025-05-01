@@ -33,6 +33,11 @@ final class SeatViewController: UIViewController {
         super.viewDidLoad()
         configure()
     }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.applyFGNavigationBarStyle(.dark(title: "좌석 선택"))
+    }
 }
 
 extension SeatViewController {

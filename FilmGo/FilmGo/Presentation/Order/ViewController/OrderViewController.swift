@@ -34,6 +34,11 @@ final class OrderViewController: UIViewController {
         super.viewDidLoad()
         configure()
     }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.applyFGNavigationBarStyle(.dark(title: "예매하기"))
+    }
 }
 
 private extension OrderViewController {
