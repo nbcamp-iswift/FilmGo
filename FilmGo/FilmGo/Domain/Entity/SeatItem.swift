@@ -8,14 +8,15 @@
 import Foundation
 
 struct SeatItem: Hashable {
-    let number: Int
-    let state: State
+    let seatNumber: Int
+    var userID: String
+    var state: State
 }
 
 extension SeatItem {
-    enum State {
-        case selectable
-        case alreadySelected
-        case selecting
+    enum State: Int {
+        case selectable = 0
+        case alreadySelected = 1
+        case selecting = 2
     }
 }

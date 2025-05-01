@@ -51,8 +51,15 @@ extension SeatViewController {
         viewModel.state
             .compactMap(\.selectedSeats)
             .asDriver(onErrorDriveWith: .empty())
-            .drive { [weak self] selectedSeats in
-                self?.seatView.updateSelectedSeats(selectedSeats)
+            .drive { [weak self] seats in
+                self?.seatView.updateSelectedSeats(seats)
+            }
+            .disposed(by: disposeBag)
+
+        seatView.didTapCell
+            .asDriver(onErrorDriveWith: .empty())
+            .drive { [weak self] indexPath in
+                self?.viewModel.action.accept(.didTapCell(indexPath.item))
             }
             .disposed(by: disposeBag)
     }

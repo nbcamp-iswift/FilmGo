@@ -24,6 +24,8 @@ final class SeatViewModel: ViewModelProtocol {
         switch action {
         case .viewDidLoad:
             .just(.startListening)
+        case .didTapCell(let seatNumber):
+            .just(.selectSeat(seatNumber))
         }
     }
 
@@ -39,6 +41,11 @@ final class SeatViewModel: ViewModelProtocol {
                     self.state.accept(.init(movie: state.movie, selectedSeats: seats))
                 })
                 .disposed(by: disposeBag)
+        case .selectSeat(let seatNumber):
+            SupabaseService.shared.toggleSelectedSeat(
+                movieID: state.movie.movieId,
+                seatNumber: seatNumber,
+            )
         }
 
         return newState
@@ -52,14 +59,16 @@ final class SeatViewModel: ViewModelProtocol {
 extension SeatViewModel {
     enum Action {
         case viewDidLoad
+        case didTapCell(Int)
     }
 
     enum Mutation {
         case startListening
+        case selectSeat(Int)
     }
 
     struct State {
         var movie: Movie
-        var selectedSeats = [Int]()
+        var selectedSeats = [SeatItem]()
     }
 }

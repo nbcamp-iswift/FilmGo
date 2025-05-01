@@ -65,14 +65,19 @@ final class SeatView: UIView {
         fatalError()
     }
 
-    func updateSelectedSeats(_ selectedSeats: [Int]) {
-        var newSnapshot = NSDiffableDataSourceSnapshot<Section, SeatItem>()
-        let newItems = (0 ..< 64).map {
-            let state: SeatItem.State = selectedSeats.contains($0) ? .alreadySelected : .selectable
-            return SeatItem(number: $0, state: state)
+    func updateSelectedSeats(_ selectedSeats: [SeatItem]) {
+        var seats = (0 ..< 64).map {
+            SeatItem(seatNumber: $0, userID: "", state: .selectable)
         }
+        selectedSeats.forEach {
+            seats[$0.seatNumber].userID = $0.userID
+            seats[$0.seatNumber].state = $0.state
+        }
+
+        var newSnapshot = NSDiffableDataSourceSnapshot<Section, SeatItem>()
         newSnapshot.appendSections([.main])
-        newSnapshot.appendItems(newItems)
+        newSnapshot.appendItems(seats)
+
         dataSource?.apply(newSnapshot)
     }
 
@@ -111,6 +116,7 @@ private extension SeatView {
         setHierarchy()
         setConstraints()
         setDataSource()
+        setBindings()
     }
 
     func setAttributes() {
@@ -168,9 +174,17 @@ private extension SeatView {
         var snapshot = NSDiffableDataSourceSnapshot<Section, SeatItem>()
         snapshot.appendSections([.main])
         snapshot.appendItems(
-            (0 ..< 64).map { SeatItem(number: $0, state: .selectable) }
+            (0 ..< 64).map {
+                SeatItem(seatNumber: $0, userID: "", state: .selectable)
+            }
         )
         dataSource?.apply(snapshot)
+    }
+
+    func setBindings() {
+        collectionView.rx.itemSelected
+            .bind(to: didTapCell)
+            .disposed(by: disposeBag)
     }
 }
 

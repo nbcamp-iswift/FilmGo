@@ -11,4 +11,13 @@ struct SelectedSeatDTO: Decodable {
     let id: Int
     let movieID: Int
     let seatNumber: Int
+    let userID: String
+    let state: Int
+}
+
+struct SelectedSeatRequestDTO: Encodable {
+    let movieID: Int
+    let seatNumber: Int
+    let userID: String
+    let state: Int
 }
