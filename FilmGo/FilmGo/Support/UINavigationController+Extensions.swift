@@ -10,6 +10,9 @@ import UIKit
 extension UINavigationController {
     func applyFGNavigationBarStyle(_ style: FGNavigationBarStyle) {
         let appearance = UINavigationBarAppearance()
+        appearance.backButtonAppearance.normal.titleTextAttributes = [
+            .foregroundColor: UIColor.clear
+        ]
 
         let backImage: UIImage = .back.withRenderingMode(.alwaysOriginal)
         appearance.setBackIndicatorImage(backImage, transitionMaskImage: backImage)
