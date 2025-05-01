@@ -50,5 +50,14 @@ extension DetailViewController {
                 self?.detailView.update(with: $0)
             }
             .disposed(by: disposeBag)
+
+        detailView.didTapbookButton
+            .asDriver(onErrorDriveWith: .empty())
+            .drive { [weak self] _ in
+                // TODO: DIContainer 구현하기 전 임시 push
+                let vc = OrderViewController()
+                self?.navigationController?.pushViewController(vc, animated: true)
+            }
+            .disposed(by: disposeBag)
     }
 }

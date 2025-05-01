@@ -7,8 +7,14 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class DetailView: UIView {
+    let didTapbookButton = PublishRelay<Void>()
+
+    private let disposeBag = DisposeBag()
+
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.showsVerticalScrollIndicator = false
@@ -112,6 +118,7 @@ private extension DetailView {
         setAttributes()
         setHierarchy()
         setConstraints()
+        setBindings()
     }
 
     func setAttributes() {
@@ -199,5 +206,11 @@ private extension DetailView {
             make.top.equalTo(actorsStackView.snp.bottom).offset(24)
             make.directionalHorizontalEdges.bottom.equalToSuperview().inset(16)
         }
+    }
+
+    func setBindings() {
+        bookButton.rx.tap
+            .bind(to: didTapbookButton)
+            .disposed(by: disposeBag)
     }
 }
