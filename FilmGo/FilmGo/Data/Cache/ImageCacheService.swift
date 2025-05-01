@@ -8,8 +8,8 @@ enum CacheOption {
 }
 
 enum ImageServiceType {
-    case Network
-    case Local
+    case network
+    case local
 }
 
 protocol ImageCacheServiceProtocol {
@@ -65,7 +65,7 @@ final class ImageCacheService {
                     return data
                 } catch let error as NSError {
                     #if DEBUG
-                    print(error.localizedDescription)
+                        print(error.localizedDescription)
                     #endif
                 }
             }
@@ -75,10 +75,10 @@ final class ImageCacheService {
 
     func setData(_ data: Data, for key: String, option: CacheOption, type: ImageServiceType) {
         let url = URL(string: key) ?? URL(fileURLWithPath: key)
-        let cacheKey = type == .Network ? url.absoluteString : key
+        let cacheKey = type == .network ? url.absoluteString : key
         switch option {
         case .none:
-            break;
+            break
         case .memory:
             cache.setObject(data as NSData, forKey: cacheKey as NSString)
         case .disk:
@@ -111,10 +111,13 @@ final class ImageCacheService {
             cache.removeAllObjects()
             do {
                 try fileManager.removeItem(at: diskCacheDirectory)
-                try fileManager.createDirectory(at: diskCacheDirectory, withIntermediateDirectories: true)
+                try fileManager.createDirectory(
+                    at: diskCacheDirectory,
+                    withIntermediateDirectories: true
+                )
             } catch let error as NSError {
                 #if DEBUG
-                print(error.localizedDescription)
+                    print(error.localizedDescription)
                 #endif
             }
         }
@@ -124,7 +127,7 @@ final class ImageCacheService {
         path: String,
         size: TMDBPosterSize,
         option: CacheOption = .memory,
-        type: ImageServiceType = .Network,
+        type: ImageServiceType = .network,
         imageDownLoader: @escaping (String, TMDBPosterSize) -> Single<Data>
     ) -> Single<Data> {
         let key = "\(size.rawValue)_\(path)".replacingOccurrences(of: "/", with: "_")
@@ -137,7 +140,7 @@ final class ImageCacheService {
                 self.setData(data, for: key, option: option, type: type)
             }, onError: { error in
                 #if DEBUG
-                print("failed to download image: \(error)")
+                    print("failed to download image: \(error)")
                 #endif
             })
     }
@@ -146,13 +149,15 @@ final class ImageCacheService {
         path: String,
         lowResSize: TMDBPosterSize = .w92,
         highResSize: TMDBPosterSize = .original,
-        delay: RxTimeInterval = .microseconds(200),
+        delay: RxTimeInterval = .microseconds(500),
         imageDownloader: @escaping (String, TMDBPosterSize) -> Single<Data>
     ) -> Observable<Data> {
         // lowresImage network load
-        let lowResData = loadImage(path: path,
-                                size: lowResSize,
-                                imageDownLoader: imageDownloader).asObservable()
+        let lowResData = loadImage(
+            path: path,
+            size: lowResSize,
+            imageDownLoader: imageDownloader
+        ).asObservable()
 
         // highresImage network load
         let highResData = Observable.just(())
@@ -161,7 +166,8 @@ final class ImageCacheService {
                 self.loadImage(
                     path: path,
                     size: highResSize,
-                    imageDownLoader: imageDownloader).asObservable()
+                    imageDownLoader: imageDownloader
+                ).asObservable()
             }
 
         // 순차적으로 두 Observable 을 전달.

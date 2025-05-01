@@ -5,8 +5,9 @@ final class DefaultMovieRepository: MovieRepositoryProtocol {
     private let networkService: NetworkServiceProtocol
     private let imageCacheService: ImageCacheService
 
-    init(networkService: NetworkServiceProtocol,
-         imageCacheService: ImageCacheService = .shared
+    init(
+        networkService: NetworkServiceProtocol,
+        imageCacheService: ImageCacheService = .shared
     ) {
         self.networkService = networkService
         self.imageCacheService = imageCacheService
@@ -24,20 +25,11 @@ final class DefaultMovieRepository: MovieRepositoryProtocol {
         )
 
         return Single.zip(detailReq, creditReq)
-            .flatMap { detailDto, creditDto -> Single<Movie> in
-                guard let posterPath = detailDto.posterPath else {
-                    return Single.error(NetworkError.invalidURL)
-                }
-
-                return self.networkService.downloadImage(path: posterPath, size: .w500)
-                    .map { imageData in
-                        self.mapToMovieEntity(
-                            detailDTO: detailDto,
-                            creditDTO: creditDto,
-                            imageData: imageData
-                        )
-                    }
-            }
+            .map { detailDto, creditDto in
+                self.mapToMovieEntity(
+                    detailDTO: detailDto,
+                    creditDTO: creditDto
+                ) }
     }
 
     func fetchPopularMovies(page: Int) -> Single<PaginatedMovies> {
@@ -57,7 +49,6 @@ final class DefaultMovieRepository: MovieRepositoryProtocol {
     private func mapToMovieEntity(
         detailDTO: MovieDetailResponseDTO,
         creditDTO: MovieCreditResponseDTO,
-        imageData: Data
     ) -> Movie {
         let releaseYear = detailDTO.releaseDate?.split(separator: "-").first
             .flatMap { Int($0) } ?? 0
@@ -67,7 +58,7 @@ final class DefaultMovieRepository: MovieRepositoryProtocol {
 
         return Movie(
             movieId: detailDTO.id ?? 0,
-            posterImage: imageData,
+            posterImagePath: detailDTO.posterPath ?? "",
             title: detailDTO.title ?? "Untitled",
             star: voteAverage,
             runningTime: "\(detailDTO.runtime ?? 0)",

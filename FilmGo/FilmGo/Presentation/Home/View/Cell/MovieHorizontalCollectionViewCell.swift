@@ -7,8 +7,10 @@
 
 import UIKit
 import SnapKit
+import RxSwift
 
 final class MovieHorizontalCollectionViewCell: UICollectionViewCell {
+    private var disposeBag = DisposeBag()
     private let imageView: UIImageView = {
         let imageView = UIImageView()
         return imageView
@@ -41,15 +43,39 @@ final class MovieHorizontalCollectionViewCell: UICollectionViewCell {
         configure()
     }
 
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        disposeBag = DisposeBag()
+        imageView.image = nil
+    }
+
     @available(*, unavailable)
     required init(coder: NSCoder) {
         fatalError()
     }
 
-    func update(posterImage: Data, title: String, genre: String) {
-        imageView.image = UIImage(data: posterImage)
+    func update(posterImagePath: String, title: String, genre: String) {
         titleLabel.text = title
         genreLabel.text = genre
+
+        ImageCacheService.shared
+            .loadProgressiveImage(
+                path: posterImagePath,
+                imageDownloader: DefaultNetworkService().downloadImage
+            )
+            .compactMap { UIImage(data: $0) }
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] image in
+                UIView.transition(
+                    with: self?.imageView ?? UIImageView(),
+                    duration: 0.5,
+                    options: .transitionCrossDissolve,
+                    animations: {
+                        self?.imageView.image = image
+                    }
+                )
+            })
+            .disposed(by: disposeBag)
     }
 }
 

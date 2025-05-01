@@ -100,7 +100,7 @@ private extension HomeViewController {
                         for: indexPath
                     ) as? MovieHorizontalCollectionViewCell else { return UICollectionViewCell() }
                     cell.update(
-                        posterImage: movie.posterImage,
+                        posterImagePath: movie.posterImagePath,
                         title: movie.title,
                         genre: movie.genres.joined(separator: ", ")
                     )
@@ -111,7 +111,7 @@ private extension HomeViewController {
                         for: indexPath
                     ) as? MovieVerticalCollectionViewCell else { return UICollectionViewCell() }
                     cell.update(
-                        posterImage: movie.posterImage,
+                        posterImagePath: movie.posterImagePath,
                         title: movie.title,
                         genre: movie.genres.joined(separator: ", "),
                         star: movie.star,
