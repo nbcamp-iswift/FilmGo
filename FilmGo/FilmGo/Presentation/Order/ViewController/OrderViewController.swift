@@ -56,6 +56,17 @@ private extension OrderViewController {
             }
             .disposed(by: disposeBag)
 
+        orderView.didTapSelectSeatButton
+            .asDriver(onErrorDriveWith: .empty())
+            .drive { [weak self] _ in
+                // TODO: DIContainer 구현하기 전 임시 push
+                guard let movie = self?.viewModel.state.value.movie else { return }
+                let vm = SeatViewModel(movie: movie)
+                let vc = SeatViewController(viewModel: vm)
+                self?.navigationController?.pushViewController(vc, animated: true)
+            }
+            .disposed(by: disposeBag)
+
         viewModel.state
             .compactMap(\.movie)
             .asDriver(onErrorDriveWith: .empty())
