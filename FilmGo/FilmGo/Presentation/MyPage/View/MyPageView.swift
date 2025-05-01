@@ -46,7 +46,7 @@ final class MyPageView: UIView {
 
     private let orderHistoryView = MenuItemView(type: .orderHistory)
 
-    private let logoutView = MenuItemView(type: .logout)
+    let logoutView = MenuItemView(type: .logout)
 
     override init(frame: CGRect) {
         super.init(frame: .zero)

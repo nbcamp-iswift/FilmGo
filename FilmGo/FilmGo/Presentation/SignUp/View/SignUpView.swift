@@ -1,5 +1,5 @@
 //
-//  LoginView.swift
+//  SignUpView.swift
 //  FilmGo
 //
 //  Created by 곽다은 on 4/28/25.
@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class LoginView: UIView {
+final class SignUpView: UIView {
     private let formView: UIView = {
         let view = UIView()
         view.backgroundColor = .neutrals800
@@ -16,15 +16,15 @@ final class LoginView: UIView {
         return view
     }()
 
-    private let profileImageView: UIView = {
-        let imageView = UIImageView()
-        imageView.image = .profile
-        return imageView
+    let backButton: UIButton = {
+        let button = UIButton()
+        button.setImage(.back, for: .normal)
+        return button
     }()
 
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "로그인"
+        label.text = "회원가입"
         label.textColor = .baseWhite
         label.font = .boldSystemFont(ofSize: 20.4)
         return label
@@ -37,29 +37,33 @@ final class LoginView: UIView {
         return stackView
     }()
 
-    private let emailTextField = FGTextField(type: .email)
+    let emailTextField = FGTextField(type: .email)
 
-    private let passwordTextField = FGTextField(type: .password)
+    let nameTextField = FGTextField(type: .name)
 
-    private let loginButton = FGButton(type: .login)
+    let passwordTextField = FGTextField(type: .password)
 
-    private let signUpStackView: UIStackView = {
+    let confirmPasswordTextField = FGTextField(type: .confirmPassword)
+
+    let signUpButton = FGButton(type: .signUp)
+
+    private let loginStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.spacing = 4.19
         return stackView
     }()
 
-    private let signUpLabel: UILabel = {
+    private let loginLabel: UILabel = {
         let label = UILabel()
-        label.text = "계정이 없으신가요?"
+        label.text = "이미 계정이 있으신가요?"
         label.font = .systemFont(ofSize: 13.6)
         label.textColor = .baseWhite
         return label
     }()
 
-    private let signUpButton: UIButton = {
+    let loginButton: UIButton = {
         let button = UIButton()
-        button.setTitle("회원가입", for: .normal)
+        button.setTitle("로그인", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 13.6)
         button.setTitleColor(.primary300, for: .normal)
         return button
@@ -76,7 +80,7 @@ final class LoginView: UIView {
     }
 }
 
-private extension LoginView {
+private extension SignUpView {
     func configure() {
         setAttributes()
         setHierarchy()
@@ -93,22 +97,24 @@ private extension LoginView {
         ].forEach { addSubview($0) }
 
         [
-            profileImageView,
+            backButton,
             titleLabel,
             textFieldStackView,
-            loginButton,
-            signUpStackView,
+            signUpButton,
+            loginStackView,
         ].forEach { formView.addSubview($0) }
 
         [
             emailTextField,
+            nameTextField,
             passwordTextField,
+            confirmPasswordTextField,
         ].forEach { textFieldStackView.addArrangedSubview($0) }
 
         [
-            signUpLabel,
-            signUpButton
-        ].forEach { signUpStackView.addArrangedSubview($0) }
+            loginLabel,
+            loginButton,
+        ].forEach { loginStackView.addArrangedSubview($0) }
     }
 
     func setConstraints() {
@@ -117,29 +123,29 @@ private extension LoginView {
             make.centerY.equalToSuperview()
         }
 
-        profileImageView.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(32)
-            make.centerX.equalToSuperview()
-            make.size.equalTo(64)
+        backButton.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(36)
+            make.leading.equalToSuperview().inset(32)
+            make.size.equalTo(24)
         }
 
         titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(profileImageView.snp.bottom).offset(34)
             make.centerX.equalToSuperview()
+            make.centerY.equalTo(backButton)
         }
 
         textFieldStackView.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(26)
+            make.top.equalTo(titleLabel.snp.bottom).offset(32)
             make.directionalHorizontalEdges.equalToSuperview().inset(32)
         }
 
-        loginButton.snp.makeConstraints { make in
+        signUpButton.snp.makeConstraints { make in
             make.top.equalTo(textFieldStackView.snp.bottom).offset(24)
             make.directionalHorizontalEdges.equalToSuperview().inset(32)
         }
 
-        signUpStackView.snp.makeConstraints { make in
-            make.top.equalTo(loginButton.snp.bottom).offset(24)
+        loginStackView.snp.makeConstraints { make in
+            make.top.equalTo(signUpButton.snp.bottom).offset(24)
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().inset(32)
         }

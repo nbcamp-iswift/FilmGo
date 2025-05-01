@@ -83,7 +83,6 @@ private extension HomeViewController {
         title = "FilmGo"
         navigationController?.navigationBar.prefersLargeTitles = true
 
-
         let appearance = UINavigationBarAppearance()
         appearance.configureWithTransparentBackground()
         appearance.backgroundColor = .clear

@@ -52,7 +52,7 @@ final class OrderCell: UICollectionViewCell {
 
     func update(with order: Order) {
         posterImageView.backgroundColor = .primary300
-        titleLabel.text = order.movieName
+        titleLabel.text = ""
         dateLabel.text = "2024-01-15 20:00"
         seatsLabel.text = "좌석: D4, D5"
         orderStateView.update(state: .upComming)
