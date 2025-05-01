@@ -2,7 +2,7 @@ import Foundation
 
 struct Movie: Hashable {
     let movieId: Int
-    let posterImage: Data
+    let posterImagePath: String
     let title: String
     let star: String
     let runningTime: String

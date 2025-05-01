@@ -99,7 +99,7 @@ final class DetailView: UIView {
     }
 
     func update(with movie: Movie) {
-        posterImageView.image = UIImage(data: movie.posterImage)
+        // posterImageView.image = UIImage(data: movie.posterImage)
         titleLabel.text = movie.title
         infoStackView.update(
             runtime: movie.runningTime,
