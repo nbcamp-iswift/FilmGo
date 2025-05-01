@@ -26,13 +26,19 @@ final class SeatViewModel: ViewModelProtocol {
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .viewDidLoad:
-            .just(.startListening)
+            return .just(.startListening)
         case .didTapCell(let seatNumber):
-            .just(.selectSeat(seatNumber))
+            return .just(.selectSeat(seatNumber))
         case .didTapPayButton:
-            useCase.createOrder(
+            let randomDate = Calendar.current.date(
+                byAdding: .day,
+                value: Int.random(in: 1 ... 3),
+                to: Date()
+            )
+            return useCase.createOrder(
                 movieID: state.value.movie.movieId,
-                seats: state.value.selectingSeatsByCurrentUser.map(\.seatNumber)
+                seats: state.value.selectingSeatsByCurrentUser.map(\.seatNumber),
+                date: randomDate ?? Date()
             )
             .map { result in
                 .updateFinishCreateOrder(result)

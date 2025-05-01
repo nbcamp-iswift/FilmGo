@@ -51,7 +51,7 @@ final class OrderCell: UICollectionViewCell {
     }
 
     func update(with order: OrderCellModel) {
-        posterImageView.backgroundColor = .primary300
+        posterImageView.setProgressiveImage(by: order.posterImagePath)
         titleLabel.text = order.movieTitle
         dateLabel.text = order.formattedDate
         seatsLabel.text = order.seats

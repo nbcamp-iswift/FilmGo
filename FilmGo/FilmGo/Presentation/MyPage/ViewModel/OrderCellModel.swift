@@ -9,6 +9,7 @@ import Foundation
 
 struct OrderCellModel: Hashable {
     let movieTitle: String
+    let posterImagePath: String
     let date: Date
     let seats: String
     var isUpComming: Bool {

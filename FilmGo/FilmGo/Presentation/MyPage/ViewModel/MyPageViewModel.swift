@@ -63,14 +63,18 @@ private extension MyPageViewModel {
                         let seatsString = order.seats.joined(separator: " ")
                         return OrderCellModel(
                             movieTitle: movie.title,
+                            posterImagePath: movie.posterImagePath,
                             date: order.orderedDate,
-                            seats: seatsString
+                            seats: seatsString,
                         )
                     }
             }
             .toArray()
             .asObservable()
-            .map { .setOrders($0) }
+            .map { models in
+                let sorted = models.sorted { $0.date > $1.date }
+                return .setOrders(sorted)
+            }
     }
 }
 
