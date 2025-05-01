@@ -106,7 +106,7 @@ private extension SearchView {
 
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1),
-            heightDimension: .fractionalHeight(0.2)
+            heightDimension: .fractionalHeight(0.23)
         )
         let group = NSCollectionLayoutGroup.vertical(
             layoutSize: groupSize,

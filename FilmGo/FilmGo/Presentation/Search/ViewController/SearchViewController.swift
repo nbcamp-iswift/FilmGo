@@ -14,6 +14,7 @@ enum SearchSection: Int, Hashable {
 }
 
 final class SearchViewController: UIViewController {
+    private let coordinator: SearchCoordinator
     private let viewModel: SearchViewModel
     private let searchView = SearchView()
     private let disposeBag = DisposeBag()
@@ -32,8 +33,14 @@ final class SearchViewController: UIViewController {
         configure()
     }
 
-    init(viewModel: SearchViewModel) {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tabBarController?.tabBar.isHidden = false
+    }
+
+    init(viewModel: SearchViewModel, coordinator: SearchCoordinator) {
         self.viewModel = viewModel
+        self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -72,18 +79,18 @@ private extension SearchViewController {
     func setDataSource() {
         dataSource = UICollectionViewDiffableDataSource<SearchSection, Movie>(
             collectionView: searchView.searchCollectionView,
-            cellProvider: { collectionView, indexPath, _ in
+            cellProvider: { collectionView, indexPath, item in
                 guard let cell = collectionView.dequeueReusableCell(
                     withReuseIdentifier: MovieVerticalCollectionViewCell.reuseIdentifier,
                     for: indexPath
                 ) as? MovieVerticalCollectionViewCell else { return UICollectionViewCell() }
-//                cell.update(
-//                    posterImage: item.posterImage,
-//                    title: item.title,
-//                    genre: item.genres.joined(separator: ", "),
-//                    star: item.star,
-//                    runtime: item.runningTime
-//                )
+                cell.update(
+                    posterImagePath: item.posterImagePath,
+                    title: item.title,
+                    genre: item.genres.joined(separator: ", "),
+                    star: item.star,
+                    runtime: item.runningTime
+                )
                 return cell
             }
         )
@@ -120,8 +127,19 @@ private extension SearchViewController {
             .subscribe(onNext: { [weak self] indexPath in
                 guard let self else { return }
                 guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
+                print(item)
+                coordinator.showDetailView(movie: item)
+            })
+            .disposed(by: disposeBag)
 
-//                navigationController?.pushViewController(detailVC, animated: true)
+        searchView.searchController.searchBar.rx
+            .text
+            .orEmpty
+            .distinctUntilChanged()
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] text in
+                guard let self else { return }
+                viewModel.action.accept(.fetchSearchResult(text))
             })
             .disposed(by: disposeBag)
     }

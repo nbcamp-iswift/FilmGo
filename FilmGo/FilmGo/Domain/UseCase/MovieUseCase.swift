@@ -26,4 +26,8 @@ final class MovieUseCase: MovieUseCaseProtocol {
     func execute(for id: Int) -> Observable<Movie> {
         repository.fetchMovieEntity(id: id).asObservable()
     }
+
+    func fetchMoviesByTitle(movieTitle: String) -> Observable<[Movie]> {
+        repository.fetchMoviesByTitle(movieTitle: movieTitle).asObservable()
+    }
 }

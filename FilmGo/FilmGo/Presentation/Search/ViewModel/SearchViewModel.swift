@@ -12,17 +12,14 @@ import RxRelay
 final class SearchViewModel: ViewModelProtocol {
     enum Action {
         case fetchSearchResult(String)
-        case changedSearchKeyword(String)
     }
 
     enum Mutation {
         case setSearchResult([Movie])
-        case updateSearchKeyword(String)
     }
 
     struct State {
         var movie: [Movie] = []
-        var searchKeyword: String = ""
     }
 
     var state: BehaviorRelay<State>
@@ -40,9 +37,8 @@ final class SearchViewModel: ViewModelProtocol {
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .fetchSearchResult(let keyword):
-            return .empty()
-        case .changedSearchKeyword(let keyword):
-            return .just(.updateSearchKeyword(keyword))
+            return useCase.fetchMoviesByTitle(movieTitle: keyword)
+                .map { .setSearchResult($0) }
         }
     }
 
@@ -51,8 +47,6 @@ final class SearchViewModel: ViewModelProtocol {
         switch mutation {
         case .setSearchResult(let models):
             newState.movie = models
-        case .updateSearchKeyword(let keyword):
-            newState.searchKeyword = keyword
         }
         return newState
     }

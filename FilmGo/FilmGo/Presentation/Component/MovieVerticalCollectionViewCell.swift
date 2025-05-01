@@ -7,8 +7,11 @@
 
 import UIKit
 import SnapKit
+import RxSwift
 
 final class MovieVerticalCollectionViewCell: UICollectionViewCell {
+    private var disposeBag = DisposeBag()
+
     private let imageView: UIImageView = {
         let imageView = UIImageView()
         return imageView
@@ -58,6 +61,12 @@ final class MovieVerticalCollectionViewCell: UICollectionViewCell {
         configure()
     }
 
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        disposeBag = DisposeBag()
+        imageView.image = nil
+    }
+
     @available(*, unavailable)
     required init(coder: NSCoder) {
         fatalError()
@@ -74,6 +83,25 @@ final class MovieVerticalCollectionViewCell: UICollectionViewCell {
         titleLabel.text = title
         genreLabel.text = genre
         infoStackView.update(runtime: runtime, star: star)
+
+        ImageCacheService.shared
+            .loadProgressiveImage(
+                path: posterImagePath,
+                imageDownloader: DefaultNetworkService().downloadImage
+            )
+            .compactMap { UIImage(data: $0) }
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] image in
+                UIView.transition(
+                    with: self?.imageView ?? UIImageView(),
+                    duration: 0.5,
+                    options: .transitionCrossDissolve,
+                    animations: {
+                        self?.imageView.image = image
+                    }
+                )
+            })
+            .disposed(by: disposeBag)
     }
 }
 
