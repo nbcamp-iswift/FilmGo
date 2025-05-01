@@ -10,13 +10,13 @@ import RxSwift
 import RxCocoa
 
 final class DetailViewController: UIViewController {
-    private var coordinator: HomeCoordinator
+    private var coordinator: HomeCoordinator?
     private let viewModel: DetailViewModel
     private let disposeBag = DisposeBag()
 
     private let detailView = DetailView()
 
-    init(viewModel: DetailViewModel, coordinator: HomeCoordinator) {
+    init(viewModel: DetailViewModel, coordinator: HomeCoordinator? = nil) {
         self.viewModel = viewModel
         self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
@@ -40,6 +40,7 @@ final class DetailViewController: UIViewController {
         super.viewWillAppear(animated)
         navigationController?.applyFGNavigationBarStyle(.clear)
         navigationItem.backButtonTitle = nil
+        tabBarController?.tabBar.isHidden = true
     }
 }
 
@@ -61,7 +62,7 @@ extension DetailViewController {
             .asDriver(onErrorDriveWith: .empty())
             .drive { [weak self] _ in
                 guard let movie = self?.viewModel.state.value.movie else { return }
-                self?.coordinator.showOrderView(movie: movie)
+                self?.coordinator?.showOrderView(movie: movie)
             }
             .disposed(by: disposeBag)
     }

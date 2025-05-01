@@ -49,7 +49,7 @@ extension DefaultMovieRepository {
 
     private func mapToMovieEntity(
         detailDTO: MovieDetailResponseDTO,
-        creditDTO: MovieCreditResponseDTO,
+        creditDTO: MovieCreditResponseDTO
     ) -> Movie {
         let releaseYear = detailDTO.releaseDate?
             .split(separator: "-")
@@ -147,8 +147,8 @@ extension DefaultMovieRepository {
 // MARK: - Core Data
 
 extension DefaultMovieRepository {
-    func fetchMoviesByTitle(movieTitle: String) -> [Movie] {
-        storage.searchMovie(movieTitle: movieTitle)
+    func fetchMoviesByTitle(movieTitle: String) -> Single<[Movie]> {
+        Single.just(storage.searchMovie(movieTitle: movieTitle))
     }
 
     func updateMovieImageData(movieId: Int, imageData: Data) {

@@ -23,7 +23,17 @@ final class SearchCoordinator {
 
 extension SearchCoordinator {
     func showSearchView() {
-        let searchVC = SearchViewController(viewModel: diContainer.makeSearchViewModel())
+        let searchVC = SearchViewController(
+            viewModel: diContainer.makeSearchViewModel(),
+            coordinator: self
+        )
         navigationController.pushViewController(searchVC, animated: true)
+    }
+
+    func showDetailView(movie: Movie) {
+        let detailVC = DetailViewController(
+            viewModel: diContainer.makeDetailViewModel(movie: movie)
+        )
+        navigationController.pushViewController(detailVC, animated: true)
     }
 }

@@ -42,6 +42,7 @@ final class HomeViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.applyFGNavigationBarStyle(.large(title: "FilmGo"))
+        tabBarController?.tabBar.isHidden = false
     }
 
     init(viewModel: HomeViewModel, coordinator: HomeCoordinator) {
