@@ -37,6 +37,8 @@ final class MyPageViewModel: ViewModelProtocol {
         switch mutation {
         case .setUserInfo(let user):
             newState.user = user
+        case .setOrders(let orders):
+            newState.orders = orders
         case .setIsLogout(let isLogout):
             newState.isLogout = isLogout
         }
@@ -52,11 +54,13 @@ extension MyPageViewModel {
 
     enum Mutation {
         case setUserInfo(User?)
+        case setOrders([Order])
         case setIsLogout(Bool)
     }
 
     struct State {
         var user: User?
+        var orders: [Order] = []
         var isLogout: Bool = false
     }
 }

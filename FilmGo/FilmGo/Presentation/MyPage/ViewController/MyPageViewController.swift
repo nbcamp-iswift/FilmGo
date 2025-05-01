@@ -63,6 +63,14 @@ private extension MyPageViewController {
             .disposed(by: disposeBag)
 
         viewModel.state
+            .map(\.orders)
+            .asDriver(onErrorDriveWith: .empty())
+            .drive(with: self) { owner, orders in
+                owner.myPageView.updateSnapshot(with: orders)
+            }
+            .disposed(by: disposeBag)
+
+        viewModel.state
             .map(\.isLogout)
             .filter { $0 }
             .asDriver(onErrorDriveWith: .empty())
