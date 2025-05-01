@@ -8,6 +8,18 @@
 import Foundation
 
 final class DIContainer: DIContainerProtocol {
+    func makeLoginViewModel() -> LoginViewModel {
+        let repository = DefaultUserRepository(storage: CoreDataStorage())
+        let useCase = UserUseCase(repository: repository)
+        return LoginViewModel(useCase: useCase)
+    }
+
+    func makeSignUpViewModel() -> SignUpViewModel {
+        let repository = DefaultUserRepository(storage: CoreDataStorage())
+        let useCase = UserUseCase(repository: repository)
+        return SignUpViewModel(useCase: useCase)
+    }
+
     func makeHomeViewModel() -> HomeViewModel {
         let repository = DefaultMovieRepository(networkService: DefaultNetworkService())
         let useCase = MovieUseCase(repository: repository)

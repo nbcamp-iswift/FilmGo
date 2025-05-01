@@ -11,12 +11,14 @@ import RxCocoa
 
 final class LoginViewController: UIViewController {
     let viewModel: LoginViewModel
+    let coordinator: LoginCoordinator
     let disposeBag = DisposeBag()
 
     private let loginView = LoginView()
 
-    init(viewModel: LoginViewModel) {
+    init(viewModel: LoginViewModel, coordinator: LoginCoordinator) {
         self.viewModel = viewModel
+        self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -75,8 +77,8 @@ private extension LoginViewController {
             .map(\.isLogin)
             .filter { $0 }
             .asDriver(onErrorDriveWith: .empty())
-            .drive(with: self) { _, _ in
-                // TODO: popViewController -> Tabbar로 이동
+            .drive(with: self) { owner, _ in
+                owner.coordinator.login()
             }
             .disposed(by: disposeBag)
 
@@ -85,15 +87,7 @@ private extension LoginViewController {
             .filter { $0 }
             .asDriver(onErrorDriveWith: .empty())
             .drive(with: self) { owner, _ in
-                let storage = CoreDataStorage()
-                let userRepository = DefaultUserRepository(storage: storage)
-                let signUpUseCae = UserUseCase(repository: userRepository)
-                let signUpViewModel = SignUpViewModel(signUpUseCase: signUpUseCae)
-                let signUpViewController = SignUpViewController(viewModel: signUpViewModel)
-                owner.navigationController?.pushViewController(
-                    signUpViewController,
-                    animated: false
-                )
+                owner.coordinator.showSignUpView()
             }
             .disposed(by: disposeBag)
     }

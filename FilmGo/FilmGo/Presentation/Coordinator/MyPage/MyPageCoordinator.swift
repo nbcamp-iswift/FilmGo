@@ -8,11 +8,16 @@
 import UIKit
 
 final class MyPageCoordinator {
-    // TODO: Add AppCoordinator
+    private let parentCoordinator: AppCoordinator
     private var navigationController: UINavigationController
     private let diContainer: DIContainerProtocol
 
-    init(navigationController: UINavigationController, diConatiner: DIContainerProtocol) {
+    init(
+        parentCoordinator: AppCoordinator,
+        navigationController: UINavigationController,
+        diConatiner: DIContainerProtocol
+    ) {
+        self.parentCoordinator = parentCoordinator
         self.navigationController = navigationController
         diContainer = diConatiner
     }
@@ -20,11 +25,18 @@ final class MyPageCoordinator {
     func start() {
         showMyPage()
     }
+
+    func logout() {
+        parentCoordinator.runLoginFlow()
+    }
 }
 
 extension MyPageCoordinator {
     func showMyPage() {
-        let myPageVC = MyPageViewController(viewModel: diContainer.makeMyPageViewModel())
+        let myPageVC = MyPageViewController(
+            coordinator: self,
+            viewModel: diContainer.makeMyPageViewModel()
+        )
         navigationController.pushViewController(myPageVC, animated: true)
     }
 }

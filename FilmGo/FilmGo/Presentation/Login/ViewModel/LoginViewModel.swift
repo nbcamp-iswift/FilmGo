@@ -24,12 +24,14 @@ final class LoginViewModel: ViewModelProtocol {
     func mutate(action: Action) -> RxSwift.Observable<Mutation> {
         switch action {
         case .didTapLoginButton:
-            let isLoginSuccess = isLoginSuccess()
-            // isLoginSuccess로 조건 분기: false이면 setIsLogoutFailed
-            return .concat([
-                .just(.setIsLogin(true)),
-                .just(.setIsLogin(false)),
-            ])
+            if isLoginSuccess() {
+                return .concat([
+                    .just(.setIsLogin(true)),
+                    .just(.setIsLogin(false)),
+                ])
+            } else {
+                return .empty()
+            }
         case .didChangeEmailTextField(let input):
             return .just(.setEmail(input))
         case .didChangePasswordTextFiedl(let input):

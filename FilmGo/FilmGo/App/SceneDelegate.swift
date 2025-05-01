@@ -2,6 +2,8 @@ import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
+    var appCoordinator: AppCoordinator?
+    var diContainer = DIContainer()
 
     func scene(
         _ scene: UIScene,
@@ -9,22 +11,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         options connectionOptions: UIScene.ConnectionOptions
     ) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
-        let window = UIWindow(windowScene: windowScene)
+        window = UIWindow(windowScene: windowScene)
 
         let navigationController = UINavigationController()
-        navigationController.isNavigationBarHidden = true
+        appCoordinator = AppCoordinator(navigationController: navigationController)
+        appCoordinator?.start()
 
-        let tabBarCoordinator = TabBarCoordinator(
-            navigationController: navigationController,
-            diContainer: DIContainer()
-        )
-
-        tabBarCoordinator.start()
-
-        window.rootViewController = navigationController
-        window.makeKeyAndVisible()
-        self.window = window
+        window?.rootViewController = navigationController
+        window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {}

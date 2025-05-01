@@ -8,12 +8,17 @@
 import UIKit
 
 final class TabBarCoordinator {
-//    private let parentCoordinator: AppCoordinator
+    private let parentCoordinator: AppCoordinator
     private let tabBarController = UITabBarController()
     private var navigationController: UINavigationController
     private let diContainer: DIContainerProtocol
 
-    init(navigationController: UINavigationController, diContainer: DIContainerProtocol) {
+    init(
+        parentCoordinator: AppCoordinator,
+        navigationController: UINavigationController,
+        diContainer: DIContainerProtocol
+    ) {
+        self.parentCoordinator = parentCoordinator
         self.navigationController = navigationController
         self.diContainer = diContainer
     }
@@ -68,6 +73,7 @@ final class TabBarCoordinator {
             searchCoordinator.start()
         case .myPage:
             let myPageCoordinator = MyPageCoordinator(
+                parentCoordinator: parentCoordinator,
                 navigationController: navigationController,
                 diConatiner: diContainer
             )

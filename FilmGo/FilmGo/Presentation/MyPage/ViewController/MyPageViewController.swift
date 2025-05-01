@@ -10,12 +10,14 @@ import RxSwift
 import RxCocoa
 
 final class MyPageViewController: UIViewController {
+    private let coordinator: MyPageCoordinator
     private let viewModel: MyPageViewModel
     private var disposeBag = DisposeBag()
 
     private let myPageView = MyPageView()
 
-    init(viewModel: MyPageViewModel) {
+    init(coordinator: MyPageCoordinator, viewModel: MyPageViewModel) {
+        self.coordinator = coordinator
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -53,8 +55,9 @@ private extension MyPageViewController {
             .map(\.isLogout)
             .filter { $0 }
             .asDriver(onErrorDriveWith: .empty())
-            .drive(with: self) { _, _ in
+            .drive(with: self) { owner, _ in
                 // TODO: popViewController, loginVC로 이동
+                owner.coordinator.logout()
             }
             .disposed(by: disposeBag)
     }

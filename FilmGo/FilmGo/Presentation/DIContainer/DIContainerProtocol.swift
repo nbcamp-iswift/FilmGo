@@ -8,6 +8,8 @@
 import Foundation
 
 protocol DIContainerProtocol {
+    func makeLoginViewModel() -> LoginViewModel
+    func makeSignUpViewModel() -> SignUpViewModel
     func makeHomeViewModel() -> HomeViewModel
     func makeSearchViewModel() -> SearchViewModel
     func makeMyPageViewModel() -> MyPageViewModel
