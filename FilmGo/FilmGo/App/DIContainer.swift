@@ -55,6 +55,8 @@ final class DIContainer: DIContainerProtocol {
     }
 
     func makeSeatViewModel(movie: Movie) -> SeatViewModel {
-        SeatViewModel(movie: movie)
+        let repository = DefaultOrderRepository(storage: CoreDataStorage.shared)
+        let useCase = OrderUseCase(repository: repository)
+        return SeatViewModel(movie: movie, useCase: useCase)
     }
 }

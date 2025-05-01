@@ -36,7 +36,8 @@ extension DefaultMovieRepository {
                 self.mapToMovieEntity(
                     detailDTO: detailDto,
                     creditDTO: creditDto
-                ) }
+                )
+            }
     }
 
     func fetchPopularMovies(page: Int) -> Single<PaginatedMovies> {
