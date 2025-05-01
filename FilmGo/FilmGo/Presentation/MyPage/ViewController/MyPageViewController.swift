@@ -56,7 +56,6 @@ private extension MyPageViewController {
             .filter { $0 }
             .asDriver(onErrorDriveWith: .empty())
             .drive(with: self) { owner, _ in
-                // TODO: popViewController, loginVC로 이동
                 owner.coordinator.logout()
             }
             .disposed(by: disposeBag)

@@ -14,6 +14,7 @@ final class AppCoordinator {
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
         diContainer = DIContainer()
+        configure()
     }
 
     func start() {
@@ -22,6 +23,16 @@ final class AppCoordinator {
         } else {
             runLoginFlow()
         }
+    }
+}
+
+private extension AppCoordinator {
+    func configure() {
+        setAttributes()
+    }
+
+    func setAttributes() {
+        navigationController.navigationBar.isHidden = true
     }
 }
 
