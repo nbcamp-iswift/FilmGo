@@ -12,6 +12,8 @@ final class CoreDataStorage {
     static let shared = CoreDataStorage()
     private let scheduler = ConcurrentDispatchQueueScheduler(qos: .userInitiated)
 
+    private init() {}
+
     var context: NSManagedObjectContext {
         persistentContainer.viewContext
     }
@@ -43,6 +45,7 @@ final class CoreDataStorage {
 }
 
 // MARK: - User & Order
+
 extension CoreDataStorage {
     func loginUser(email: String, password: String) -> Bool {
         guard let user = fetchUser(byEmail: email), user.password == password else {
@@ -148,6 +151,7 @@ extension CoreDataStorage {
 }
 
 // MARK: - MovieDO
+
 extension CoreDataStorage {
     func saveMovie(_ movie: Movie) {
         if let existedMovie = fetchMovieEntity(movieId: movie.movieId) {

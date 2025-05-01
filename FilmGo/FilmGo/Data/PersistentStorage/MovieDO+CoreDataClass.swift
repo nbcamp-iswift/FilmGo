@@ -2,6 +2,4 @@ import Foundation
 import CoreData
 
 @objc(MovieDO)
-public class MovieDO: NSManagedObject {
-
-}
+public class MovieDO: NSManagedObject {}

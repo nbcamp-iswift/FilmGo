@@ -18,6 +18,7 @@ final class DefaultMovieRepository: MovieRepositoryProtocol {
 }
 
 // MARK: - Network
+
 extension DefaultMovieRepository {
     func fetchMovieEntity(id: Int) -> Single<Movie> {
         let detailReq: Single<MovieDetailResponseDTO> = networkService.request(
@@ -103,6 +104,7 @@ extension DefaultMovieRepository {
 }
 
 // MARK: - ImageCacheService
+
 extension DefaultMovieRepository {
     func fetchPosterImage(
         for movie: Movie,
@@ -118,7 +120,7 @@ extension DefaultMovieRepository {
             option: .memory,
             type: .network
         ) { path, size in
-            return self.networkService.downloadImage(path: path, size: size)
+            self.networkService.downloadImage(path: path, size: size)
         }
         .map { UIImage(data: $0) }
     }
@@ -136,16 +138,17 @@ extension DefaultMovieRepository {
             highResSize: .original,
             delay: .microseconds(400)
         ) { path, size in
-            return self.networkService.downloadImage(path: path, size: size)
+            self.networkService.downloadImage(path: path, size: size)
         }
         .map { UIImage(data: $0) }
     }
 }
 
 // MARK: - Core Data
+
 extension DefaultMovieRepository {
     func fetchMoviesByTitle(movieTitle: String) -> [Movie] {
-        return storage.searchMovie(movieTitle: movieTitle)
+        storage.searchMovie(movieTitle: movieTitle)
     }
 
     func updateMovieImageData(movieId: Int, imageData: Data) {

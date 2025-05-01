@@ -44,7 +44,7 @@ final class ImageCacheService: ImageCacheServiceProtocol {
         return url.appendingPathComponent("ImageCache", isDirectory: true)
     }
 
-    init() {
+    private init() {
         try? fileManager.createDirectory(at: diskCacheDirectory, withIntermediateDirectories: true)
     }
 

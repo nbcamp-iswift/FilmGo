@@ -72,7 +72,7 @@ private extension SearchViewController {
     func setDataSource() {
         dataSource = UICollectionViewDiffableDataSource<SearchSection, Movie>(
             collectionView: searchView.searchCollectionView,
-            cellProvider: { collectionView, indexPath, item in
+            cellProvider: { collectionView, indexPath, _ in
                 guard let cell = collectionView.dequeueReusableCell(
                     withReuseIdentifier: MovieVerticalCollectionViewCell.reuseIdentifier,
                     for: indexPath

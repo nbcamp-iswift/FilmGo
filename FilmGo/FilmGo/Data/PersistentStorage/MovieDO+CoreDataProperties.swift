@@ -1,32 +1,32 @@
 import Foundation
 import CoreData
 
-extension MovieDO {
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<MovieDO> {
-        return NSFetchRequest<MovieDO>(entityName: "MovieDO")
+public extension MovieDO {
+    @nonobjc class func fetchRequest() -> NSFetchRequest<MovieDO> {
+        NSFetchRequest<MovieDO>(entityName: "MovieDO")
     }
 
-    @NSManaged public var id: Int64 // movie-id
-    @NSManaged public var title: String
-    @NSManaged public var star: String
-    @NSManaged public var runningTime: String
-    @NSManaged public var posterPath: String
-    @NSManaged public var genre: [String]?
-    @NSManaged public var posterImage: Data?
+    @NSManaged var id: Int64 // movie-id
+    @NSManaged var title: String
+    @NSManaged var star: String
+    @NSManaged var runningTime: String
+    @NSManaged var posterPath: String
+    @NSManaged var genre: [String]?
+    @NSManaged var posterImage: Data?
 }
 
-extension MovieDO : Identifiable {}
+extension MovieDO: Identifiable {}
 
 extension MovieDO {
     func toDomain() -> Movie {
-        return Movie(
-            movieId: Int(self.id),
-            posterImagePath: self.posterPath,
-            title: self.title,
-            star: self.star,
-            runningTime: self.runningTime,
+        Movie(
+            movieId: Int(id),
+            posterImagePath: posterPath,
+            title: title,
+            star: star,
+            runningTime: runningTime,
             releasedYear: 0,
-            genres: self.genre ?? [],
+            genres: genre ?? [],
             overview: "",
             director: "",
             actors: []
