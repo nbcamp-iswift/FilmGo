@@ -1,3 +1,4 @@
+
 import Foundation
 import CoreData
 
@@ -6,15 +7,13 @@ public extension User {
         NSFetchRequest<User>(entityName: "User")
     }
 
-    @NSManaged var id: UUID
-    @NSManaged var name: String
     @NSManaged var email: String
-    @NSManaged var password: String
+    @NSManaged var id: UUID
     @NSManaged var isLogin: Bool
+    @NSManaged var name: String
+    @NSManaged var password: String
     @NSManaged var orders: NSOrderedSet?
 }
-
-// MARK: Generated accessors for orders
 
 public extension User {
     @objc(insertObject:inOrdersAtIndex:)

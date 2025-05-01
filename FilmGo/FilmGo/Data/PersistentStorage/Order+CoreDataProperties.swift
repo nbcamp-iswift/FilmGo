@@ -9,7 +9,7 @@ public extension Order {
     @NSManaged var id: UUID
     @NSManaged var movieid: Int64
     @NSManaged var orderedDate: Date
-    @NSManaged var seats: [String]?
+    @NSManaged var seats: [String]
     @NSManaged var user: User?
 }
 
