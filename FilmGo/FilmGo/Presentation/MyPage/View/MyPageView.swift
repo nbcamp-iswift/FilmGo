@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 final class MyPageView: UIView {
-    private var dataSource: UICollectionViewDiffableDataSource<MyPageSection, Order>?
+    private var dataSource: UICollectionViewDiffableDataSource<MyPageSection, OrderCellModel>?
 
     private let contentView = UIView()
 
@@ -62,8 +62,8 @@ final class MyPageView: UIView {
         userView.update(with: user)
     }
 
-    func updateSnapshot(with items: [Order]) {
-        var snapshot = NSDiffableDataSourceSnapshot<MyPageSection, Order>()
+    func updateSnapshot(with items: [OrderCellModel]) {
+        var snapshot = NSDiffableDataSourceSnapshot<MyPageSection, OrderCellModel>()
         snapshot.appendSections([.orders])
         snapshot.appendItems(items)
         dataSource?.apply(snapshot)
@@ -147,7 +147,7 @@ private extension MyPageView {
             return headerView
         }
 
-        var initialSnapshot = NSDiffableDataSourceSnapshot<MyPageSection, Order>()
+        var initialSnapshot = NSDiffableDataSourceSnapshot<MyPageSection, OrderCellModel>()
         initialSnapshot.appendSections([.orders])
         dataSource?.apply(initialSnapshot)
     }

@@ -15,9 +15,9 @@ final class OrderUseCase {
         self.repository = repository
     }
 
-    func createOrder(movieID: Int, seats: [Int]) -> Observable<Bool> {
+    func createOrder(movieID: Int, seats: [Int], date: Date) -> Observable<Bool> {
         repository
-            .createOrder(movieId: movieID, seats: seats.map { "\($0)" })
+            .createOrder(movieId: movieID, seats: seats.map { "\($0)" }, date: date)
             .asObservable()
     }
 }

@@ -41,9 +41,15 @@ final class DIContainer: DIContainerProtocol {
     }
 
     func makeMyPageViewModel() -> MyPageViewModel {
-        let repository = DefaultUserRepository(storage: CoreDataStorage.shared)
-        let useCase = UserUseCase(repository: repository)
-        return MyPageViewModel(useCase: useCase)
+        let userRepository = DefaultUserRepository(storage: CoreDataStorage.shared)
+        let movieRepository = DefaultMovieRepository(
+            networkService: DefaultNetworkService(),
+            imageCacheService: ImageCacheService.shared,
+            storage: CoreDataStorage.shared,
+        )
+        let userUseCase = UserUseCase(repository: userRepository)
+        let movieUseCase = MovieUseCase(repository: movieRepository)
+        return MyPageViewModel(userUseCase: userUseCase, movieUseCase: movieUseCase)
     }
 
     func makeDetailViewModel(movie: Movie) -> DetailViewModel {

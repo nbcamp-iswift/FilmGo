@@ -15,14 +15,18 @@ final class DefaultOrderRepository: OrderRepositoryProtocol {
         self.storage = storage
     }
 
-    func createOrder(movieId: Int, seats: [String]) -> Single<Bool> {
+    func createOrder(movieId: Int, seats: [String], date: Date) -> Single<Bool> {
         Single.create { [weak self] emitter in
             guard let self else {
                 emitter(.failure(CoreDataStorageError.unknownError))
                 return Disposables.create()
             }
             do {
-                try emitter(.success(storage.createOrder(movieId: movieId, seats: seats)))
+                try emitter(.success(storage.createOrder(
+                    movieId: movieId,
+                    seats: seats,
+                    orderedDate: date
+                )))
             } catch {
                 emitter(.failure(CoreDataStorageError.unknownError))
             }

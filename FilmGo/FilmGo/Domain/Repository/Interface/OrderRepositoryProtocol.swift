@@ -9,5 +9,5 @@ import Foundation
 import RxSwift
 
 protocol OrderRepositoryProtocol {
-    func createOrder(movieId: Int, seats: [String]) -> Single<Bool>
+    func createOrder(movieId: Int, seats: [String], date: Date) -> Single<Bool>
 }

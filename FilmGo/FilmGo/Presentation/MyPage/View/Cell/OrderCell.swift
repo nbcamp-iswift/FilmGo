@@ -50,13 +50,12 @@ final class OrderCell: UICollectionViewCell {
         fatalError()
     }
 
-    func update(with order: Order) {
-        posterImageView.backgroundColor = .primary300
-        // TODO: posterImageView.setProgressiveImage(by:)로 변경
-        titleLabel.text = ""
-        dateLabel.text = "2024-01-15 20:00"
-        seatsLabel.text = "좌석: D4, D5"
-        orderStateView.update(state: .upComming)
+    func update(with order: OrderCellModel) {
+        posterImageView.setProgressiveImage(by: order.posterImagePath)
+        titleLabel.text = order.movieTitle
+        dateLabel.text = order.formattedDate
+        seatsLabel.text = order.seats
+        orderStateView.update(state: order.isUpComming ? .upComming : .completed)
     }
 }
 
