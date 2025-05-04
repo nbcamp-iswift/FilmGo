@@ -7,8 +7,8 @@
 
 import UIKit
 
-final class SearchCoordinator {
-    private var navigationController: UINavigationController
+final class SearchCoordinator: Coordinator {
+    var navigationController: UINavigationController
     private let diContainer: DIContainerProtocol
 
     init(navigationController: UINavigationController, diConatiner: DIContainerProtocol) {

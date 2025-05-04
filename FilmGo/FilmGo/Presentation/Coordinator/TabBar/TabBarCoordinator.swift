@@ -7,11 +7,13 @@
 
 import UIKit
 
-final class TabBarCoordinator {
-    private let parentCoordinator: AppCoordinator
+final class TabBarCoordinator: Coordinator {
+    private weak var parentCoordinator: AppCoordinator?
     private let tabBarController = UITabBarController()
-    private var navigationController: UINavigationController
+    var navigationController: UINavigationController
     private let diContainer: DIContainerProtocol
+
+    private var childCoordinators: [Coordinator] = []
 
     init(
         parentCoordinator: AppCoordinator,
@@ -64,19 +66,22 @@ final class TabBarCoordinator {
                 navigationController: navigationController,
                 diConatiner: diContainer
             )
+            childCoordinators.append(homeCoordinator)
             homeCoordinator.start()
         case .search:
             let searchCoordinator = SearchCoordinator(
                 navigationController: navigationController,
                 diConatiner: diContainer
             )
+            childCoordinators.append(searchCoordinator)
             searchCoordinator.start()
         case .myPage:
             let myPageCoordinator = MyPageCoordinator(
-                parentCoordinator: parentCoordinator,
+                parentCoordinator: self,
                 navigationController: navigationController,
                 diConatiner: diContainer
             )
+            childCoordinators.append(myPageCoordinator)
             myPageCoordinator.start()
         }
     }
@@ -97,5 +102,13 @@ final class TabBarCoordinator {
 
     private func setTabBarController() {
         navigationController.setViewControllers([tabBarController], animated: false)
+    }
+}
+
+extension TabBarCoordinator {
+    func logout() {
+        childCoordinators.removeAll()
+        navigationController.viewControllers.removeAll()
+        parentCoordinator?.logout()
     }
 }

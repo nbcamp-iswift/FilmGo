@@ -7,8 +7,8 @@
 
 import UIKit
 
-final class HomeCoordinator {
-    private var navigationController: UINavigationController
+final class HomeCoordinator: Coordinator {
+    var navigationController: UINavigationController
     private let diContainer: DIContainerProtocol
 
     init(navigationController: UINavigationController, diConatiner: DIContainerProtocol) {

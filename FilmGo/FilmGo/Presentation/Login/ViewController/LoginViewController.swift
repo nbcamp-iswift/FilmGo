@@ -11,7 +11,7 @@ import RxCocoa
 
 final class LoginViewController: UIViewController {
     let viewModel: LoginViewModel
-    let coordinator: LoginCoordinator
+    weak var coordinator: LoginCoordinator?
     let disposeBag = DisposeBag()
 
     private let loginView = LoginView()
@@ -78,7 +78,7 @@ private extension LoginViewController {
             .filter { $0 }
             .asDriver(onErrorDriveWith: .empty())
             .drive(with: self) { owner, _ in
-                owner.coordinator.login()
+                owner.coordinator?.login()
             }
             .disposed(by: disposeBag)
 
@@ -87,7 +87,7 @@ private extension LoginViewController {
             .filter { $0 }
             .asDriver(onErrorDriveWith: .empty())
             .drive(with: self) { owner, _ in
-                owner.coordinator.showSignUpView()
+                owner.coordinator?.showSignUpView()
             }
             .disposed(by: disposeBag)
     }

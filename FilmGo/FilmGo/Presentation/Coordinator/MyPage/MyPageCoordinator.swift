@@ -7,13 +7,13 @@
 
 import UIKit
 
-final class MyPageCoordinator {
-    private let parentCoordinator: AppCoordinator
-    private var navigationController: UINavigationController
+final class MyPageCoordinator: Coordinator {
+    private weak var parentCoordinator: TabBarCoordinator?
+    var navigationController: UINavigationController
     private let diContainer: DIContainerProtocol
 
     init(
-        parentCoordinator: AppCoordinator,
+        parentCoordinator: TabBarCoordinator?,
         navigationController: UINavigationController,
         diConatiner: DIContainerProtocol
     ) {
@@ -27,7 +27,7 @@ final class MyPageCoordinator {
     }
 
     func logout() {
-        parentCoordinator.runLoginFlow()
+        parentCoordinator?.logout()
     }
 }
 

@@ -7,15 +7,15 @@
 
 import UIKit
 
-final class LoginCoordinator {
-    var parentCoordinator: AppCoordinator
-    private var navigationController: UINavigationController
+final class LoginCoordinator: Coordinator {
+    weak var parentCoordinator: AppCoordinator?
+    var navigationController: UINavigationController
     private var diContainer: DIContainerProtocol
 
     init(
         parentCoordinator: AppCoordinator,
         navigationController: UINavigationController,
-        diContainer: DIContainerProtocol,
+        diContainer: DIContainerProtocol
     ) {
         self.parentCoordinator = parentCoordinator
         self.navigationController = navigationController
@@ -27,7 +27,7 @@ final class LoginCoordinator {
     }
 
     func login() {
-        parentCoordinator.runTabFlow()
+        parentCoordinator?.login(coordinator: self)
     }
 }
 
@@ -35,7 +35,7 @@ extension LoginCoordinator {
     func showLoginView() {
         let loginVC = LoginViewController(
             viewModel: diContainer.makeLoginViewModel(),
-            coordinator: self,
+            coordinator: self
         )
         navigationController.pushViewController(loginVC, animated: true)
     }

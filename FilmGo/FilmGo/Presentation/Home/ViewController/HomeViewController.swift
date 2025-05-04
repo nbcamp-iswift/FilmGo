@@ -20,7 +20,7 @@ enum MovieSectionItem: Hashable {
 }
 
 final class HomeViewController: UIViewController {
-    private var coordinator: HomeCoordinator
+    private weak var coordinator: HomeCoordinator?
     private let viewModel: HomeViewModel
     private let homeView = HomeView()
     private let disposeBag = DisposeBag()
@@ -163,9 +163,9 @@ private extension HomeViewController {
 
                 switch item {
                 case .nowPlaying(let movie):
-                    coordinator.showDetailView(movie: movie)
+                    coordinator?.showDetailView(movie: movie)
                 case .popular(let movie):
-                    coordinator.showDetailView(movie: movie)
+                    coordinator?.showDetailView(movie: movie)
                 }
             })
             .disposed(by: disposeBag)

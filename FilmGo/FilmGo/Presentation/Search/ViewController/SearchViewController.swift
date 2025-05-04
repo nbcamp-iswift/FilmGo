@@ -14,7 +14,7 @@ enum SearchSection: Int, Hashable {
 }
 
 final class SearchViewController: UIViewController {
-    private let coordinator: SearchCoordinator
+    private weak var coordinator: SearchCoordinator?
     private let viewModel: SearchViewModel
     private let searchView = SearchView()
     private let disposeBag = DisposeBag()
@@ -127,8 +127,7 @@ private extension SearchViewController {
             .subscribe(onNext: { [weak self] indexPath in
                 guard let self else { return }
                 guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
-                print(item)
-                coordinator.showDetailView(movie: item)
+                coordinator?.showDetailView(movie: item)
             })
             .disposed(by: disposeBag)
 

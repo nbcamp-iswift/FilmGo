@@ -7,9 +7,10 @@
 
 import UIKit
 
-final class AppCoordinator {
-    private let navigationController: UINavigationController
+final class AppCoordinator: Coordinator {
+    var navigationController: UINavigationController
     private let diContainer: DIContainerProtocol
+    private var childCoordinators: [Coordinator] = []
 
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
@@ -42,8 +43,9 @@ extension AppCoordinator {
         let tabbarCoordinator = TabBarCoordinator(
             parentCoordinator: self,
             navigationController: navigationController,
-            diContainer: diContainer,
+            diContainer: diContainer
         )
+        childCoordinators.append(tabbarCoordinator)
         tabbarCoordinator.start()
     }
 
@@ -52,8 +54,21 @@ extension AppCoordinator {
         let loginCoordinator = LoginCoordinator(
             parentCoordinator: self,
             navigationController: navigationController,
-            diContainer: diContainer,
+            diContainer: diContainer
         )
+        childCoordinators.append(loginCoordinator)
         loginCoordinator.start()
+    }
+}
+
+extension AppCoordinator {
+    func logout() {
+        childCoordinators.removeAll()
+        runLoginFlow()
+    }
+
+    func login(coordinator: LoginCoordinator) {
+        childCoordinators = childCoordinators.filter { $0 !== coordinator }
+        runTabFlow()
     }
 }

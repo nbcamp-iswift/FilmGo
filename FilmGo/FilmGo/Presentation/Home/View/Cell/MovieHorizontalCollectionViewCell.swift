@@ -11,6 +11,7 @@ import RxSwift
 
 final class MovieHorizontalCollectionViewCell: UICollectionViewCell {
     private var disposeBag = DisposeBag()
+
     private let imageView: UIImageView = {
         let imageView = UIImageView()
         return imageView

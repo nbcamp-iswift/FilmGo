@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 
 final class MyPageViewController: UIViewController {
-    private let coordinator: MyPageCoordinator
+    private weak var coordinator: MyPageCoordinator?
     private let viewModel: MyPageViewModel
     private var disposeBag = DisposeBag()
 
@@ -80,7 +80,7 @@ private extension MyPageViewController {
             .filter { $0 }
             .asDriver(onErrorDriveWith: .empty())
             .drive(with: self) { owner, _ in
-                owner.coordinator.logout()
+                owner.coordinator?.logout()
             }
             .disposed(by: disposeBag)
     }

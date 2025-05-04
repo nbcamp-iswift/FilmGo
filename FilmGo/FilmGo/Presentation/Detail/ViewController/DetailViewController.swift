@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 
 final class DetailViewController: UIViewController {
-    private var coordinator: HomeCoordinator?
+    private weak var coordinator: HomeCoordinator?
     private let viewModel: DetailViewModel
     private let disposeBag = DisposeBag()
 
